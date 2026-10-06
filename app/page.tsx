@@ -22,7 +22,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type Step = { tool: string; args: unknown; result: any; error?: boolean };
-type Message = { role: "user" | "agent"; text: string; steps?: Step[]; error?: boolean };
+type ChatBubble = { role: "user" | "agent"; text: string; steps?: Step[]; error?: boolean };
+type PendingCall = { tool: string; args: unknown; cost?: string };
+type ResumeState = { contents: unknown[]; steps: Step[] };
+type ApprovalBubble = { role: "approval"; calls: PendingCall[]; resume: ResumeState; status: "waiting" | "approved" | "denied" };
+type Message = ChatBubble | ApprovalBubble;
 type Status = { hasApiKey: boolean; model: string; tools: { name: string; description: string }[] };
 type WalletInfo = { address: string | null; balance?: string; usdc?: string | null; usdcEthereumSepolia?: string | null };
 
@@ -66,21 +70,54 @@ export default function Home() {
     const history: Message[] = [...messages, { role: "user", text }];
     setMessages(history);
     setInput("");
-    setThinking(true);
+    await postTurn(history.filter((m): m is ChatBubble => m.role !== "approval" && !m.error));
+  }
 
+  /** Resume a paused turn: the user approved or denied the payment. */
+  async function decide(card: ApprovalBubble, decision: "approved" | "deny") {
+    if (card.status !== "waiting") return;
+    setMessages((m) => m.map((x) => (x === card ? { ...x, status: decision === "approved" ? "approved" : "denied" } : x)));
+    setThinking(true);
     try {
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.filter((m) => !m.error).map(({ role, text }) => ({ role, text })) }),
+        body: JSON.stringify({ resume: { ...card.resume, decision } }),
       });
-      const data = await res.json();
-      setMessages((m) => [...m, data.error ? { role: "agent", text: data.error, error: true } : { role: "agent", text: data.answer, steps: data.steps }]);
-      if (data.steps?.some((s: Step) => s.result?.payment)) loadWallet();
+      await handleAgentResponse(res);
+      if (decision === "approved") loadWallet();
+    } catch {
+      setMessages((m) => [...m, { role: "agent", text: "Could not reach the server while resuming. Is it still running?", error: true }]);
+    }
+    setThinking(false);
+  }
+
+  async function postTurn(chat: { role: "user" | "agent"; text: string }[]) {
+    setThinking(true);
+    try {
+      const res = await fetch("/api/agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: chat.map(({ role, text }) => ({ role, text })) }),
+      });
+      await handleAgentResponse(res);
     } catch {
       setMessages((m) => [...m, { role: "agent", text: "Could not reach the server. Is `npm run dev` still running?", error: true }]);
     }
     setThinking(false);
+  }
+
+  async function handleAgentResponse(res: Response) {
+    const data = await res.json();
+    if (data.pending) {
+      setMessages((m) => [...m, { role: "approval", calls: data.calls, resume: data.resume, status: "waiting" }]);
+      return;
+    }
+    setMessages((m) => [
+      ...m,
+      data.error ? { role: "agent", text: data.error, error: true } : { role: "agent", text: data.answer, steps: data.steps },
+    ]);
+    if (data.steps?.some((s: Step) => s.result?.payment)) loadWallet();
   }
 
   const ready = Boolean(status?.hasApiKey);
@@ -205,6 +242,8 @@ export default function Home() {
                   <div key={i} className="max-w-[85%] self-end bg-primary px-4 py-2.5 font-medium text-primary-foreground">
                     {m.text}
                   </div>
+                ) : m.role === "approval" ? (
+                  <ApprovalCard key={i} card={m} onDecide={decide} disabled={thinking} />
                 ) : (
                   <div key={i} className="flex max-w-[85%] gap-3 self-start">
                     <div className="flex size-8 shrink-0 items-center justify-center border">
@@ -340,6 +379,53 @@ function WalletDetails({ wallet, onRefresh }: { wallet: WalletInfo; onRefresh: (
         </a>
       </div>
       <p className="text-xs text-muted-foreground">Base Sepolia testnet. Keys via WALLET_PRIVATE_KEY env or .agent-wallet.json.</p>
+    </div>
+  );
+}
+
+function ApprovalCard({
+  card,
+  onDecide,
+  disabled,
+}: {
+  card: ApprovalBubble;
+  onDecide: (card: ApprovalBubble, decision: "approved" | "deny") => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="flex max-w-[85%] gap-3 self-start">
+      <div className="flex size-8 shrink-0 items-center justify-center border">
+        <Wallet className="size-4 text-primary" />
+      </div>
+      <div className="flex min-w-0 flex-col gap-2 border bg-background p-3">
+        <p className="font-mono text-xs uppercase">
+          <span className="text-primary">payment approval</span> <span className="text-muted-foreground">— maxx wants to spend</span>
+        </p>
+        {card.calls.map((c, i) => (
+          <div key={i} className="border p-2 font-mono text-xs">
+            <p>
+              <span className="text-primary">&gt;</span> {c.tool}
+              <span className="ml-2 text-foreground">{c.cost ?? "free"}</span>
+            </p>
+            <pre className="mt-1 overflow-x-auto text-muted-foreground">{JSON.stringify(c.args)}</pre>
+          </div>
+        ))}
+        <p className="text-xs text-muted-foreground">Paid from the agent wallet — real testnet USDC, settled on-chain.</p>
+        {card.status === "waiting" ? (
+          <div className="flex gap-2">
+            <Button size="sm" disabled={disabled} onClick={() => onDecide(card, "approved")} className="font-mono uppercase">
+              <Check /> Approve &amp; pay
+            </Button>
+            <Button size="sm" variant="outline" disabled={disabled} onClick={() => onDecide(card, "deny")} className="font-mono uppercase">
+              Deny
+            </Button>
+          </div>
+        ) : (
+          <p className={cn("font-mono text-xs uppercase", card.status === "approved" ? "text-primary" : "text-destructive")}>
+            {card.status === "approved" ? "✓ approved — settled on-chain" : "✕ denied — no payment made"}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

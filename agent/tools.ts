@@ -16,6 +16,8 @@ export type Tool = {
   description: string;
   /** JSON Schema describing the inputs. */
   parameters: object;
+  /** Set for tools that cost money — their calls pause for user approval. */
+  cost?: string;
   /** The code that runs when the agent calls this tool. */
   run: (args: any, ctx: { baseUrl: string }) => Promise<unknown>;
 };
@@ -25,6 +27,7 @@ export const tools: Tool[] = [
   {
     name: "get_weather",
     description: "Get the current weather for a city. Costs 0.01 USDC, paid automatically from the agent's wallet.",
+    cost: "0.01 USDC",
     parameters: {
       type: "object",
       properties: {
@@ -41,6 +44,7 @@ export const tools: Tool[] = [
   {
     name: "get_fortune",
     description: "Get the agent's secret degen fortune (a crypto fortune-cookie reading). Costs 0.05 USDC, paid automatically.",
+    cost: "0.05 USDC",
     parameters: { type: "object", properties: {} },
     run: async (_args, { baseUrl }) => payAndFetch(`${baseUrl}/api/fortune`),
   },

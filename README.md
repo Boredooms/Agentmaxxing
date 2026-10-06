@@ -28,6 +28,8 @@ Maxx is powered by Google Gemini, decides for itself which tools to call, and wh
 
 Both paid routes run through one reusable framework (`lib/x402.ts`): `paidApi({ price, handler })` handles the 402 demand, EIP-3009 verification, on-chain settlement, per-payer rate limits (10 paid calls/min) and a per-IP guard (60 req/min → `429` with `Retry-After`). The chat endpoint is rate-limited too (30 req/min per IP).
 
+**Human in the loop**: paid tool calls pause the agent and pop an approval card in the chat — tool, arguments and price. Nothing is signed until you hit **Approve & pay**; **Deny** sends the refusal back to the model and it answers without the data. Free tools run automatically. After approval the UI shows the settlement tx (linked to basescan) and the wallet panel refreshes — you can watch the USDC balance tick down.
+
 ## Run it locally
 
 ```bash
