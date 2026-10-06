@@ -1,0 +1,16 @@
+node_modules
+.next
+.env
+.env*.local
+.agent-wallet.json
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
+
+# local tool caches, not part of the project
+.mimosa
+.kilocode
+.v2c
+.video_agent
+.zcodeignore
+tmpwebapp*.log
