@@ -131,11 +131,12 @@ export function facilitatorAddress(): Address {
 export type Settlement = { from: Address; value: bigint; txHash: Hex };
 type VerifyFail = { error: string };
 
-/** Recover and check a signed payment, then settle it on-chain via the facilitator. */
-export async function verifyAndSettle(
+/** Recover and check a signed payment WITHOUT settling. Settlement happens
+ *  after the job succeeds, so clients never pay for failed work. */
+export async function verifyOnly(
   header: string,
   demand: { payTo: Address; maxAmountRequired: bigint; resource: string }
-): Promise<Settlement | VerifyFail> {
+): Promise<{ from: Address; value: bigint; nonce: Hex; signature: Hex; validAfter: bigint; validBefore: bigint } | VerifyFail> {
   let payload: {
     from: Address;
     to: Address;
@@ -189,24 +190,30 @@ export async function verifyAndSettle(
     .catch(() => false);
   if (usedOnChain) return { error: "Payment already used." };
 
-  const { v, r, s } = hexToSignature(payload.signature);
+  return { from: payload.from, value, nonce: payload.nonce, signature: payload.signature, validAfter: BigInt(payload.validAfter), validBefore: BigInt(payload.validBefore) };
+}
+
+/** Settle a previously verified payment on-chain via the facilitator.
+ *  The nonce is only marked used after a successful settlement. */
+export async function settle(
+  verified: { from: Address; value: bigint; nonce: Hex; signature: Hex; validAfter: bigint; validBefore: bigint }
+): Promise<Settlement | VerifyFail> {
+  const { v, r, s } = hexToSignature(verified.signature);
   const wallet = createWalletClient({ account: facilitator(), chain: baseSepolia, transport: http() });
-  let txHash: Hex;
   try {
-    txHash = await wallet.writeContract({
+    const txHash = await wallet.writeContract({
       address: USDC_ADDRESS,
       abi: USDC_ABI,
       functionName: "transferWithAuthorization",
-      args: [payload.from, payload.to, value, BigInt(payload.validAfter), BigInt(payload.validBefore), payload.nonce, Number(v), r, s],
+      args: [verified.from, facilitatorAddress(), verified.value, verified.validAfter, verified.validBefore, verified.nonce, Number(v), r, s],
     });
     const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
     if (receipt.status !== "success") throw new Error("settlement reverted");
+    usedNonces.add(verified.nonce);
+    return { from: verified.from, value: verified.value, txHash };
   } catch (err) {
     return { error: `Settlement failed: ${err instanceof Error ? err.message.slice(0, 140) : String(err).slice(0, 140)}` };
   }
-
-  usedNonces.add(payload.nonce);
-  return { from: payload.from, value, txHash };
 }
 
 // ─── rate limiting (in-memory sliding window) ─────────────────────────────
@@ -278,31 +285,35 @@ export function paidApi(config: PaidApiConfig) {
     const header = req.headers.get("X-PAYMENT");
     if (!header) return json({ error: "Payment Required", ...demand }, 402);
 
-    // 3. verify signature + settle on-chain
-    const result = await verifyAndSettle(header, { payTo: demand.payTo, maxAmountRequired, resource }).catch((e) => ({
+    // 3. verify signature — nothing is charged yet
+    const verified = await verifyOnly(header, { payTo: demand.payTo, maxAmountRequired, resource }).catch((e) => ({
       error: String(e).slice(0, 140),
     }));
-    if ("error" in result) return json({ error: result.error, ...demand }, 402);
+    if ("error" in verified) return json({ error: verified.error, ...demand }, 402);
 
     // 4. per-payer limit
-    const payerCheck = rateLimit(`payer:${result.from}:${resource}`, config.payerLimit ?? 10, 60_000);
+    const payerCheck = rateLimit(`payer:${verified.from}:${resource}`, config.payerLimit ?? 10, 60_000);
     if (!payerCheck.ok) return json({ error: "Payer rate limit exceeded." }, 429, { "Retry-After": String(payerCheck.retryAfterS) });
 
-    // 5. serve
+    // 5. run the job FIRST — settle only on success, so failed jobs are never charged
+    let data: unknown;
     try {
-      const data = await config.handler({ url, payer: result.from });
-      return json({
-        ...(data as object),
-        payment: {
-          status: 200,
-          amount: `${config.price} USDC`,
-          to: demand.payTo,
-          txHash: result.txHash,
-          explorer: BASESCAN_TX(result.txHash),
-        },
-      });
+      data = await config.handler({ url, payer: verified.from });
     } catch (err) {
       return json({ error: err instanceof Error ? err.message : String(err) }, 500);
     }
+    const settled = await settle(verified);
+    if ("error" in settled) return json({ error: settled.error, ...demand }, 402);
+
+    return json({
+      ...(data as object),
+      payment: {
+        status: 200,
+        amount: `${config.price} USDC`,
+        to: demand.payTo,
+        txHash: settled.txHash,
+        explorer: BASESCAN_TX(settled.txHash),
+      },
+    });
   };
 }

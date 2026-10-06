@@ -16,43 +16,77 @@ type WikiSearch = { query?: { search?: Array<{ title: string }> } };
 type HnSearch = { hits?: Array<{ title: string | null; url: string | null; objectID: string; points?: number }> };
 
 export async function searchSources(safeFetchJson: (host: any, path: string, params: Record<string, string>) => Promise<unknown>, query: string): Promise<SearchHit[]> {
-  const [wiki, hn] = await Promise.allSettled([
-    safeFetchJson("en.wikipedia.org", "/w/api.php", {
-      action: "query",
-      list: "search",
-      srsearch: query,
-      srlimit: "3",
-      format: "json",
-    }) as Promise<WikiSearch>,
-    safeFetchJson("hn.algolia.com", "/api/v1/search", {
-      query,
-      tags: "story",
-      hitsPerPage: "3",
-    }) as Promise<HnSearch>,
-  ]);
+  const gather = async (q: string): Promise<SearchHit[]> => {
+    const [wiki, hn] = await Promise.allSettled([
+      safeFetchJson("en.wikipedia.org", "/w/api.php", {
+        action: "query",
+        list: "search",
+        srsearch: q,
+        srlimit: "3",
+        format: "json",
+      }) as Promise<WikiSearch>,
+      safeFetchJson("hn.algolia.com", "/api/v1/search", {
+        query: q,
+        tags: "story",
+        hitsPerPage: "3",
+      }) as Promise<HnSearch>,
+    ]);
 
-  const hits: SearchHit[] = [];
-  if (wiki.status === "fulfilled") {
-    for (const s of wiki.value.query?.search ?? []) {
-      hits.push({
-        title: s.title,
-        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(String(s.title).replace(/ /g, "_"))}`,
-        source: "wikipedia",
-      });
+    const hits: SearchHit[] = [];
+    if (wiki.status === "fulfilled") {
+      for (const s of wiki.value.query?.search ?? []) {
+        hits.push({
+          title: s.title,
+          url: `https://en.wikipedia.org/wiki/${encodeURIComponent(String(s.title).replace(/ /g, "_"))}`,
+          source: "wikipedia",
+        });
+      }
     }
-  }
-  if (hn.status === "fulfilled") {
-    for (const h of hn.value.hits ?? []) {
-      if (!h.title) continue;
-      hits.push({
-        title: h.title,
-        url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`,
-        source: "hackernews",
-      });
+    if (hn.status === "fulfilled") {
+      for (const h of hn.value.hits ?? []) {
+        if (!h.title) continue;
+        hits.push({
+          title: h.title,
+          url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`,
+          source: "hackernews",
+        });
+      }
     }
+    return hits;
+  };
+
+  // Queries that are too specific return zero hits — relax progressively:
+  // full query -> first 4 words -> distinctive keywords (stopwords stripped).
+  const attempts = [query];
+  const fourWords = query.split(/\s+/).slice(0, 4).join(" ").trim();
+  if (fourWords && fourWords.toLowerCase() !== query.trim().toLowerCase()) attempts.push(fourWords);
+  const keywords = query
+    .split(/\s+/)
+    .map((w) => w.replace(/[^a-zA-Z0-9-]/g, ""))
+    .filter((w) => w.length > 2 && !STOPWORDS.has(w.toLowerCase()))
+    .slice(0, 3)
+    .join(" ")
+    .trim();
+  if (keywords && !attempts.includes(keywords)) attempts.push(keywords);
+  // Search APIs AND their terms — a single distinctive keyword is the last
+  // resort and the most likely to hit (e.g. "EIP-3009 transferWithAuthorization"
+  // finds nothing, "EIP-3009" finds plenty).
+  const firstKeyword = keywords.split(/\s+/)[0];
+  if (firstKeyword && !attempts.includes(firstKeyword)) attempts.push(firstKeyword);
+
+  for (const attempt of attempts) {
+    const hits = await gather(attempt);
+    if (hits.length > 0) return hits;
   }
-  return hits;
+  return [];
 }
+
+const STOPWORDS = new Set([
+  "the", "a", "an", "of", "for", "and", "or", "how", "does", "do", "did", "what", "why", "when", "who",
+  "is", "are", "was", "were", "to", "in", "on", "with", "without", "from", "about", "into", "over",
+  "work", "works", "working", "explanation", "explain", "tell", "me", "use", "used", "using", "get",
+  "can", "should", "would", "their", "there", "that", "this", "these", "those", "research", "please",
+]);
 
 // ─── crawl: SSRF-safe page fetch + text extraction ────────────────────────
 // Which hosts may be crawled. Extend via CRAWL_ALLOWED_HOSTS (comma separated

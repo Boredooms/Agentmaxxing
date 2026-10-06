@@ -122,6 +122,10 @@ export async function payAndFetch(url: string) {
 
   const paid = await fetch(target, { headers: { "X-PAYMENT": header } });
   const body = await paid.json().catch(() => ({}));
+  if (paid.status !== 200) {
+    // the job failed and was never settled — surface the reason, charge nothing
+    throw new Error(body?.error ? `The paid API said: ${body.error}` : `The paid API returned ${paid.status}`);
+  }
   return {
     data: body,
     payment: {
