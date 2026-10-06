@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 type Step = { tool: string; args: unknown; result: any; error?: boolean };
 type Message = { role: "user" | "agent"; text: string; steps?: Step[]; error?: boolean };
 type Status = { hasApiKey: boolean; model: string; tools: { name: string; description: string }[] };
-type WalletInfo = { address: string | null; balance?: string };
+type WalletInfo = { address: string | null; balance?: string; usdc?: string | null; usdcEthereumSepolia?: string | null };
 
 const EXAMPLES = [
   "What's the weather in Mumbai?",
@@ -318,12 +318,19 @@ function WalletDetails({ wallet, onRefresh }: { wallet: WalletInfo; onRefresh: (
       </div>
       <div className="flex items-center justify-between font-mono text-xs text-muted-foreground uppercase">
         <span>
-          Balance <span className="text-foreground">{wallet.balance}</span>
+          ETH <span className="text-foreground">{wallet.balance}</span> · USDC{" "}
+          <span className="text-foreground">{wallet.usdc}</span>
         </span>
         <Button variant="ghost" size="icon-xs" onClick={onRefresh} aria-label="Refresh balance">
           <RefreshCw />
         </Button>
       </div>
+      {wallet.usdcEthereumSepolia && wallet.usdcEthereumSepolia !== "0 USDC" && (
+        <p className="text-xs text-muted-foreground">
+          + {wallet.usdcEthereumSepolia} found on Ethereum Sepolia — that faucet funds the wrong testnet. This agent
+          lives on Base Sepolia.
+        </p>
+      )}
       <div className="flex flex-wrap gap-x-4 gap-y-1 border-t pt-3 font-mono text-xs uppercase">
         <a className="inline-flex items-center gap-1 hover:text-primary" href={`https://sepolia.basescan.org/address/${address}`} target="_blank" rel="noreferrer">
           Explorer <ExternalLink className="size-3" />
@@ -332,7 +339,7 @@ function WalletDetails({ wallet, onRefresh }: { wallet: WalletInfo; onRefresh: (
           Get test ETH <ExternalLink className="size-3" />
         </a>
       </div>
-      <p className="text-xs text-muted-foreground">Base Sepolia testnet. Saved in .agent-wallet.json.</p>
+      <p className="text-xs text-muted-foreground">Base Sepolia testnet. Keys via WALLET_PRIVATE_KEY env or .agent-wallet.json.</p>
     </div>
   );
 }

@@ -9,7 +9,7 @@
  * and save. It shows up in the "Tools" list on the page.
  */
 import { randomInt } from "crypto";
-import { getWalletAddress, getWalletBalance, payAndFetch } from "./wallet";
+import { getWalletAddress, getWalletBalances, payAndFetch } from "./wallet";
 
 export type Tool = {
   name: string;
@@ -48,13 +48,19 @@ export const tools: Tool[] = [
   // ─── 3. Wallet tool: read the agent's own wallet ───
   {
     name: "get_my_wallet",
-    description: "Get the agent's own wallet address and its ETH balance on Base Sepolia (testnet).",
+    description:
+      "Get the agent's own wallet address and its balances: native ETH and USDC on Base Sepolia (its home testnet), plus any USDC that a faucet sent to Ethereum Sepolia instead.",
     parameters: { type: "object", properties: {} },
-    run: async () => ({
-      address: getWalletAddress(),
-      balance: await getWalletBalance(),
-      network: "Base Sepolia (testnet)",
-    }),
+    run: async () => {
+      const balances = await getWalletBalances();
+      return {
+        address: getWalletAddress(),
+        eth: balances.eth,
+        usdc: balances.usdc,
+        usdcOnEthereumSepolia: balances.usdcEthereumSepolia,
+        network: "Base Sepolia (testnet)",
+      };
+    },
   },
 
   // ─── 4. Live crypto prices from a real free API ───

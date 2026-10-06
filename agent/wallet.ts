@@ -15,12 +15,34 @@
  */
 import fs from "fs";
 import path from "path";
-import { createPublicClient, formatEther, http, verifyMessage, type Address, type Hex } from "viem";
+import {
+  createPublicClient,
+  formatEther,
+  formatUnits,
+  http,
+  verifyMessage,
+  type Address,
+  type Hex,
+} from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
+import { baseSepolia, sepolia } from "viem/chains";
 
 const WALLET_FILE = path.join(process.cwd(), ".agent-wallet.json");
 const chain = createPublicClient({ chain: baseSepolia, transport: http() });
+const ethereumSepolia = createPublicClient({ chain: sepolia, transport: http() });
+
+// Circle's testnet USDC contracts — paid APIs are priced in USDC.
+const USDC_BASE_SEPOLIA: Address = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+const USDC_ETHEREUM_SEPOLIA: Address = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
+const ERC20_BALANCE_OF = [
+  {
+    name: "balanceOf",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+] as const;
 
 export type Payment = { from: Address; to: Address; amount: string; asset: string; resource: string; nonce: string };
 
@@ -51,6 +73,35 @@ export function getWalletAddress() {
 export async function getWalletBalance() {
   const wei = await chain.getBalance({ address: requireAccount().address });
   return `${formatEther(wei)} ETH`;
+}
+
+/** ETH + USDC balances. USDC is what the paid APIs price in. Faucets often
+ *  fund Ethereum Sepolia instead of Base Sepolia, so we read USDC on both —
+ *  the agent's home chain first, the other one reported separately. */
+export async function getWalletBalances() {
+  const address = requireAccount().address;
+  const [eth, usdcBase, usdcEthereum] = await Promise.all([
+    chain.getBalance({ address }).then((wei) => formatEther(wei)),
+    chain
+      .readContract({
+        address: USDC_BASE_SEPOLIA,
+        abi: ERC20_BALANCE_OF,
+        functionName: "balanceOf",
+        args: [address],
+      })
+      .then((raw) => `${formatUnits(raw, 6)} USDC`)
+      .catch(() => null),
+    ethereumSepolia
+      .readContract({
+        address: USDC_ETHEREUM_SEPOLIA,
+        abi: ERC20_BALANCE_OF,
+        functionName: "balanceOf",
+        args: [address],
+      })
+      .then((raw) => `${formatUnits(raw, 6)} USDC`)
+      .catch(() => null),
+  ]);
+  return { eth: `${eth} ETH`, usdc: usdcBase, usdcEthereumSepolia: usdcEthereum };
 }
 
 /** Fetch a URL. If it asks for payment (402), sign one with the wallet and try again. */

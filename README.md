@@ -10,7 +10,7 @@ Maxx is powered by Google Gemini, decides for itself which tools to call, and wh
 | --- | --- | --- |
 | `get_weather` | Current weather for any city (paid API at `/api/weather`) | 0.01 USDC, auto-paid |
 | `get_fortune` | A secret degen fortune reading (paid API at `/api/fortune`, built by me) | 0.05 USDC, auto-paid |
-| `get_my_wallet` | The agent's own address + ETH balance on Base Sepolia | free |
+| `get_my_wallet` | The agent's address + ETH and USDC balances (reads Base Sepolia, and Ethereum Sepolia for stranded faucet funds) | free |
 | `get_crypto_price` | Live crypto prices via the free CoinGecko API | free |
 | `get_country_info` | Capital, population and region of any country (REST Countries) | free |
 | `get_joke` | A random joke (Official Joke API) | free |
@@ -68,6 +68,7 @@ app/
 - **Tools are just functions with good descriptions** — the LLM reads the `description` and JSON schema and decides when to call them. The description is the interface.
 - The **x402 idea**: an API can demand payment with HTTP 402, and the *agent itself* signs and pays — machines settling per-request, no accounts or API keys. Wild.
 - **Serverless constraints are real**: Vercel can't persist `.agent-wallet.json`, so the wallet has to come from env (`WALLET_PRIVATE_KEY`). Deploying taught me more about the runtime than the code did.
+- **Testnets are not interchangeable**: faucet USDC sent to Ethereum Sepolia showed as 0 in the wallet — same address, different chain. Fixed by reading USDC (`balanceOf`) on both Sepolias so funds display wherever they landed.
 - Experimented with wiring **two paid endpoints** off the same wallet and free external APIs (CoinGecko, REST Countries) alongside them.
 
 ## Credits
