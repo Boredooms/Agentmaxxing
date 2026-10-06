@@ -1,0 +1,8 @@
+.env
+.env*.local
+.agent-wallet.json
+.mimosa
+.v2c
+.video_agent
+.zcodeignore
+tmpwebapp*.log
