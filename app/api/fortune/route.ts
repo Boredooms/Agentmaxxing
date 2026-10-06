@@ -1,15 +1,9 @@
 /**
- * A SECOND PAID API, built from the weather route as a reference.
- *
- * Same x402 dance: no payment -> 402 with the price. Valid signed payment -> fortune.
- * Proves the pattern generalizes: any route can become a paid endpoint.
+ * THE DEGEN FORTUNE API — second paid endpoint, built on the same x402
+ * framework as the weather route. 0.05 USDC per reading, settled on-chain.
  */
 import { randomInt } from "crypto";
-import { verifyPayment } from "@/agent/wallet";
-
-const PRICE = "0.05";
-const ASSET = "USDC";
-const PAY_TO = "0x000000000000000000000000000000000000dEaD"; // the API owner's wallet (demo)
+import { paidApi } from "@/lib/x402";
 
 const OPENINGS = [
   "The chain whispers:",
@@ -32,16 +26,14 @@ const FORTUNES = [
   "an old wallet you abandoned will remember you fondly. check it",
 ];
 
-export async function GET(req: Request) {
-  const payment = await verifyPayment(req.headers.get("X-PAYMENT"));
-  if (!payment || payment.to !== PAY_TO || Number(payment.amount) < Number(PRICE)) {
-    return Response.json({ error: "Payment Required", price: PRICE, asset: ASSET, payTo: PAY_TO }, { status: 402 });
-  }
-
-  const pick = <T,>(arr: T[]) => arr[randomInt(0, arr.length)];
-  return Response.json({
-    fortune: `${pick(OPENINGS)} "${pick(FORTUNES)}"`,
-    luck: randomInt(0, 101) + "/100",
-    paidBy: payment.from,
-  });
-}
+export const GET = paidApi({
+  price: "0.05",
+  payerLimit: 6,
+  handler: async () => {
+    const pick = <T,>(arr: T[]) => arr[randomInt(0, arr.length)];
+    return {
+      fortune: `${pick(OPENINGS)} "${pick(FORTUNES)}"`,
+      luck: randomInt(0, 101) + "/100",
+    };
+  },
+});

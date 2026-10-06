@@ -346,13 +346,26 @@ function WalletDetails({ wallet, onRefresh }: { wallet: WalletInfo; onRefresh: (
 
 function ToolCall({ step }: { step: Step }) {
   const payment = step.result?.payment;
+  const txUrl = payment?.txHash ? `https://sepolia.basescan.org/tx/${payment.txHash}` : null;
+  const badge = (
+    <Badge className="ml-auto bg-blue font-mono text-foreground uppercase">
+      {payment ? <>Paid {payment.amount} ↗</> : null}
+    </Badge>
+  );
   return (
     <Collapsible className="border font-mono text-xs">
       <CollapsibleTrigger className="group flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted">
         <ChevronRight className="size-3.5 transition-transform group-data-[panel-open]:rotate-90" />
         <span className="text-muted-foreground uppercase">Tool</span>
         <span className="text-primary">{step.tool}</span>
-        {payment && <Badge className="ml-auto bg-blue font-mono text-foreground uppercase">Paid {payment.amount}</Badge>}
+        {payment &&
+          (txUrl ? (
+            <a href={txUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} title="View settlement on basescan" className="ml-auto">
+              {badge}
+            </a>
+          ) : (
+            <span className="ml-auto">{badge}</span>
+          ))}
         {step.error && <Badge variant="destructive" className="ml-auto font-mono uppercase">Failed</Badge>}
       </CollapsibleTrigger>
       <CollapsibleContent className="flex flex-col gap-2 border-t px-3 py-2">

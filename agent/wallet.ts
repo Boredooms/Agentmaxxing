@@ -2,16 +2,16 @@
  * THE AGENT'S WALLET
  *
  * The agent owns a wallet (a private key). It uses it to sign payments,
- * so it can pay for APIs on its own. This is the "x402" idea:
+ * so it can pay for APIs on its own. This is the x402 flow, settled for real:
  *
- *   1. Agent calls an API         ->  API answers "402 Payment Required" + a price
- *   2. Agent signs a payment      ->  with its wallet
- *   3. Agent retries with payment ->  API checks the signature and answers 200 OK
+ *   1. Agent calls an API      ->  API answers "402 Payment Required" + a price
+ *   2. Agent signs EIP-3009    ->  typed-data authorization over its USDC
+ *   3. Agent retries with the  ->  API's facilitator verifies the signature and
+ *      X-PAYMENT header            submits it to the USDC contract on-chain
+ *   4. USDC actually moves     ->  response carries the basescan tx hash
  *
- * You create the wallet with the "Create wallet" button on the page.
- * It is saved in `.agent-wallet.json` so it survives restarts.
- *
- * Payments here are signed but NOT sent on-chain (it's a demo, no real money).
+ * You create the wallet with the "Create wallet" button on the page, or
+ * provide one via WALLET_PRIVATE_KEY. It is saved in `.agent-wallet.json`.
  */
 import fs from "fs";
 import path from "path";
@@ -20,12 +20,12 @@ import {
   formatEther,
   formatUnits,
   http,
-  verifyMessage,
   type Address,
   type Hex,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { baseSepolia, sepolia } from "viem/chains";
+import { signX402Payment } from "../lib/x402";
 
 const WALLET_FILE = path.join(process.cwd(), ".agent-wallet.json");
 const chain = createPublicClient({ chain: baseSepolia, transport: http() });
@@ -43,8 +43,6 @@ const ERC20_BALANCE_OF = [
     outputs: [{ name: "", type: "uint256" }],
   },
 ] as const;
-
-export type Payment = { from: Address; to: Address; amount: string; asset: string; resource: string; nonce: string };
 
 /** The wallet from .env or .agent-wallet.json, or null if none was created yet. */
 function loadAccount() {
@@ -104,7 +102,8 @@ export async function getWalletBalances() {
   return { eth: `${eth} ETH`, usdc: usdcBase, usdcEthereumSepolia: usdcEthereum };
 }
 
-/** Fetch a URL. If it asks for payment (402), sign one with the wallet and try again. */
+/** Fetch a URL. If it demands payment (402), sign an EIP-3009 authorization
+ *  with the wallet and retry — the API then settles it on-chain for real. */
 export async function payAndFetch(url: string) {
   const target = new URL(url);
   if (target.protocol !== "http:" && target.protocol !== "https:") {
@@ -113,37 +112,23 @@ export async function payAndFetch(url: string) {
   const first = await fetch(target);
   if (first.status !== 402) return { data: await first.json() };
 
+  const demand = await first.json();
   const account = requireAccount();
-  const { price, asset, payTo } = await first.json();
-  const payment: Payment = {
-    from: account.address,
-    to: payTo,
-    amount: price,
-    asset,
-    resource: target.pathname,
-    nonce: crypto.randomUUID(),
-  };
-  const signature = await account.signMessage({ message: JSON.stringify(payment) });
-  const header = Buffer.from(JSON.stringify({ payment, signature })).toString("base64");
+  const header = await signX402Payment(account, {
+    payTo: demand.payTo,
+    maxAmountRequired: demand.maxAmountRequired,
+    resource: demand.resource,
+  });
 
   const paid = await fetch(target, { headers: { "X-PAYMENT": header } });
+  const body = await paid.json().catch(() => ({}));
   return {
-    data: await paid.json(),
-    payment: { status: paid.status, amount: `${price} ${asset}`, to: payTo, signature: `${signature.slice(0, 18)}...` },
+    data: body,
+    payment: {
+      status: paid.status,
+      amount: `${demand.price} ${demand.asset}`,
+      to: demand.payTo,
+      txHash: body?.payment?.txHash,
+    },
   };
-}
-
-/** Used by the API: is this X-PAYMENT header a real, signed payment? */
-export async function verifyPayment(header: string | null) {
-  if (!header) return null;
-  try {
-    const { payment, signature } = JSON.parse(Buffer.from(header, "base64").toString()) as {
-      payment: Payment;
-      signature: Hex;
-    };
-    const valid = await verifyMessage({ address: payment.from, message: JSON.stringify(payment), signature });
-    return valid ? payment : null;
-  } catch {
-    return null;
-  }
 }
