@@ -152,7 +152,24 @@ export const tools: Tool[] = [
     },
   },
 
-  // ─── 9. Another plain tool: pure code, no network at all ───
+  // ─── 9. PAID deep research: the agent's browser ───
+  {
+    name: "research_web",
+    description:
+      "Deep web research: searches multiple sources, crawls the top pages, extracts their text and returns structured findings with sources. Use for questions that need real reading, not just quick hits. Costs 0.1 USDC, charged after the user approves.",
+    cost: "0.1 USDC",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "Research question or topic" },
+      },
+      required: ["query"],
+    },
+    run: async ({ query }, { baseUrl }) =>
+      payAndFetch(`${baseUrl}/api/research?q=${encodeURIComponent(String(query))}`),
+  },
+
+  // ─── 10. Another plain tool: pure code, no network at all ───
   {
     name: "roll_dice",
     description: "Roll a dice with the given number of sides.",

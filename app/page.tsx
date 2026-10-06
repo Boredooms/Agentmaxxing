@@ -34,8 +34,8 @@ const EXAMPLES = [
   "What's the weather in Mumbai?",
   "What's in your wallet?",
   "What's the price of Bitcoin?",
+  "Research: what is the x402 protocol?",
   "Roll a 20 sided dice",
-  "Read my fortune",
 ];
 
 export default function Home() {

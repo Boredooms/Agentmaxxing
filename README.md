@@ -11,6 +11,8 @@ Maxx is powered by Google Gemini, decides for itself which tools to call, and wh
 | `get_weather` | Live weather for any city (geocoding + current conditions from open-meteo.com), paid via on-chain settlement at `/api/weather` | 0.01 USDC, auto-paid on-chain |
 | `get_fortune` | A secret degen fortune reading (paid API at `/api/fortune`, built by me) | 0.05 USDC, auto-paid on-chain |
 | `get_my_wallet` | The agent's address + ETH and USDC balances (reads Base Sepolia, and Ethereum Sepolia for stranded faucet funds) | free |
+| `web_search` | Quick web search — Wikipedia + Hacker News via free JSON APIs | free |
+| `research_web` | **Deep research**: searches multiple sources, crawls the top pages through an SSRF-guarded crawler, extracts their text, returns structured findings with sources | 0.1 USDC, auto-paid on-chain |
 | `get_crypto_price` | Live crypto prices via the free CoinGecko API | free |
 | `get_country_info` | Capital, population and region of any country (REST Countries) | free |
 | `get_joke` | A random joke (Official Joke API) | free |
@@ -67,8 +69,13 @@ app/
   api/wallet/route.ts # wallet status / creation
   api/weather/route.ts# paid weather API — live open-meteo data, 0.01 USDC on-chain
   api/fortune/route.ts# my own paid fortune API, 0.05 USDC on-chain
+  api/research/route.ts # paid deep research — searches + crawls the web, 0.1 USDC
   page.tsx            # the chat UI with setup panel + tool-call inspector
+lib/
+  web.ts              # search + the SSRF-guarded crawler (DNS checks, allowlist, caps)
 ```
+
+Crawl scope: the crawler only fetches hosts on an allowlist (default: wikipedia.org, news.ycombinator.com, github.com, developer.mozilla.org — extend with `CRAWL_ALLOWED_HOSTS`), https-only, ports 80/443, no URL credentials, DNS resolved and rejected if it points at loopback/private/reserved addresses, manual redirect re-validation, 8s timeout and 512KB size cap per page.
 
 ## What I learned building this (Week 1)
 
@@ -79,6 +86,7 @@ app/
 - **Serverless constraints are real**: Vercel can't persist `.agent-wallet.json`, so wallets come from env. Deploying taught me more about the runtime than the code did.
 - **Testnets are not interchangeable**: faucet USDC sent to Ethereum Sepolia showed as 0 in the wallet — same address, different chain. Fixed by reading USDC (`balanceOf`) on both Sepolias so funds display wherever they landed.
 - **Rate limits matter once money is involved**: paid endpoints got per-payer sliding-window limits plus a per-IP guard; the chat endpoint (which fronts a paid LLM) got one too.
+- **A research agent is search + crawl + reasoning**: free quick hits from fixed APIs, paid deep research that actually crawls pages — and the model, not the crawler, does the synthesizing. Chat memory got a rough token window (~6k tokens) so long conversations stay inside budget.
 - Experimented with wiring **two paid endpoints** off the same wallet and free external APIs (CoinGecko, REST Countries, Open-Meteo) alongside them.
 
 ## Credits
