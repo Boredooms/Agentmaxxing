@@ -32,6 +32,24 @@ export type PendingCall = { tool: string; args: unknown; cost?: string };
 /** Everything needed to continue a paused turn, round-tripped via the client. */
 export type ResumeState = { contents: Content[]; steps: Step[] };
 
+// Token window for chat memory: rough ~4 chars/token heuristic. Newest
+// messages win; short chats are never trimmed.
+const MAX_HISTORY_TOKENS = 6000;
+const approxTokens = (s: string) => Math.ceil((s?.length ?? 0) / 4);
+
+function trimHistory(history: ChatMessage[]): ChatMessage[] {
+  if (history.length <= 4) return history;
+  let total = 0;
+  const kept: ChatMessage[] = [];
+  for (let i = history.length - 1; i >= 0; i--) {
+    const cost = approxTokens(history[i].text.slice(-4000)) + 8;
+    if (total + cost > MAX_HISTORY_TOKENS && kept.length >= 4) break;
+    total += cost;
+    kept.unshift(history[i]);
+  }
+  return kept;
+}
+
 type AdvanceResult =
   | { answer: string; steps: Step[] }
   | { pending: PendingCall[]; contents: Content[]; steps: Step[] };
@@ -97,10 +115,11 @@ async function advance(contents: Content[], steps: Step[], ctx: { baseUrl: strin
 }
 
 /** Start a new turn from the chat history. May come back pending approval. */
-export async function runAgent(history: ChatMessage[], ctx: { baseUrl: string }) {
+export async function runAgent(rawHistory: ChatMessage[], ctx: { baseUrl: string }) {
+  const history = trimHistory(rawHistory);
   const contents: Content[] = history.map((m) => ({
     role: m.role === "user" ? "user" : "model",
-    parts: [{ text: m.text }],
+    parts: [{ text: m.text.slice(-4000) }],
   }));
   return advance(contents, [], ctx);
 }

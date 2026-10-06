@@ -232,7 +232,7 @@ function ipOf(req: Request): string {
 // Paid-API handlers may only call these hosts, over https. The handler passes
 // a compile-time host literal + path + params; the URL is assembled HERE, so
 // user input never shapes a URL string — only encoded query values.
-const ALLOWED_HOSTS = ["api.open-meteo.com", "geocoding-api.open-meteo.com"] as const;
+const ALLOWED_HOSTS = ["api.open-meteo.com", "geocoding-api.open-meteo.com", "en.wikipedia.org", "hn.algolia.com"] as const;
 export type AllowedHost = (typeof ALLOWED_HOSTS)[number];
 
 export async function safeFetchJson(host: AllowedHost, path: string, params: Record<string, string>): Promise<unknown> {

@@ -10,6 +10,8 @@
  */
 import { randomInt } from "crypto";
 import { getWalletAddress, getWalletBalances, payAndFetch } from "./wallet";
+import { searchSources } from "../lib/web";
+import { safeFetchJson } from "../lib/x402";
 
 export type Tool = {
   name: string;
@@ -132,7 +134,25 @@ export const tools: Tool[] = [
     },
   },
 
-  // ─── 7. Another plain tool: pure code, no network at all ───
+  // ─── 8. Free quick search: Wikipedia + Hacker News ───
+  {
+    name: "web_search",
+    description: "Search the web for quick hits: Wikipedia articles and Hacker News stories. Returns titles, links and sources. Free.",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "What to search for" },
+      },
+      required: ["query"],
+    },
+    run: async ({ query }) => {
+      const hits = await searchSources(safeFetchJson, String(query));
+      if (hits.length === 0) throw new Error(`No results for "${query}".`);
+      return { query, results: hits };
+    },
+  },
+
+  // ─── 9. Another plain tool: pure code, no network at all ───
   {
     name: "roll_dice",
     description: "Roll a dice with the given number of sides.",
