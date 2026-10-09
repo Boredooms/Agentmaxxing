@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="232" height="232" rx="48" fill="url(#bg)" stroke="#334155" stroke-width="2"/>
+  <!-- antenna -->
+  <line x1="120" y1="88" x2="120" y2="68" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="120" cy="58" r="10" fill="#38bdf8"/>
+  <!-- robot head -->
+  <rect x="58" y="88" width="124" height="94" rx="26" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+  <!-- ears -->
+  <rect x="46" y="118" width="12" height="34" rx="6" fill="#94a3b8"/>
+  <rect x="182" y="118" width="12" height="34" rx="6" fill="#94a3b8"/>
+  <!-- eyes -->
+  <circle cx="96" cy="128" r="12" fill="#0f172a"/>
+  <circle cx="144" cy="128" r="12" fill="#0f172a"/>
+  <circle cx="100" cy="124" r="4" fill="#e2e8f0"/>
+  <circle cx="148" cy="124" r="4" fill="#e2e8f0"/>
+  <!-- smile -->
+  <path d="M100 154 q20 14 40 0" stroke="#0f172a" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- USDC coin badge -->
+  <circle cx="178" cy="170" r="34" fill="url(#gold)" stroke="#92400e" stroke-width="4"/>
+  <text x="178" y="184" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="40" fill="#7c2d12">$</text>
+</svg>

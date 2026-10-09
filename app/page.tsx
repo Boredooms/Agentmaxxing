@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  Bot,
   Check,
   ChevronRight,
   CircleAlert,
@@ -22,13 +21,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type Step = { tool: string; args: unknown; result: any; error?: boolean };
-type ChatBubble = { role: "user" | "agent"; text: string; steps?: Step[]; error?: boolean };
+type ChatBubble = { role: "user" | "agent"; text: string; steps?: Step[]; error?: boolean; intent?: { label: string; note: string } };
 type PendingCall = { tool: string; args: unknown; cost?: string };
 type ResumeState = { contents: unknown[]; steps: Step[] };
 type ApprovalBubble = { role: "approval"; calls: PendingCall[]; resume: ResumeState; status: "waiting" | "approved" | "denied" };
 type Message = ChatBubble | ApprovalBubble;
 type Status = { hasApiKey: boolean; model: string; tools: { name: string; description: string }[] };
-type WalletInfo = { address: string | null; balance?: string; usdc?: string | null; usdcEthereumSepolia?: string | null };
+type WalletInfo = { address: string | null; balance?: string; usdc?: string | null; usdcEthereumSepolia?: string | null; rpcError?: string | null };
 
 const EXAMPLES = [
   "What's the weather in Mumbai?",
@@ -41,13 +40,26 @@ const EXAMPLES = [
 export default function Home() {
   const [status, setStatus] = useState<Status | null>(null);
   const [wallet, setWallet] = useState<WalletInfo | null>(null);
+  const [walletBusy, setWalletBusy] = useState(false);
+  const [walletFailed, setWalletFailed] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const [creating, setCreating] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const loadWallet = () => fetch("/api/wallet").then((r) => r.json()).then(setWallet);
+  // Hard-capped client side too: never let a slow wallet API hang the panel.
+  async function loadWallet() {
+    setWalletBusy(true);
+    setWalletFailed(false);
+    try {
+      const res = await fetch("/api/wallet", { signal: AbortSignal.timeout(20_000) });
+      setWallet(await res.json());
+    } catch {
+      setWalletFailed(true);
+    }
+    setWalletBusy(false);
+  }
 
   useEffect(() => {
     fetch("/api/agent").then((r) => r.json()).then(setStatus);
@@ -115,7 +127,9 @@ export default function Home() {
     }
     setMessages((m) => [
       ...m,
-      data.error ? { role: "agent", text: data.error, error: true } : { role: "agent", text: data.answer, steps: data.steps },
+      data.error
+        ? { role: "agent", text: data.error, error: true }
+        : { role: "agent", text: data.answer, steps: data.steps, intent: data.intent },
     ]);
     if (data.steps?.some((s: Step) => s.result?.payment)) loadWallet();
   }
@@ -135,6 +149,7 @@ export default function Home() {
         </div>
         <h1 className="text-5xl leading-[0.9] font-bold tracking-[-0.045em] uppercase md:text-7xl">
           Meet <span className="text-primary">Maxx.</span>
+          <img src="/icon.svg" alt="Maxx logo" className="ml-3 inline-block size-12 align-middle md:size-16" />
         </h1>
         <p className="max-w-xl text-lg text-muted-foreground">
           An AI agent that uses its own tools and pays for APIs with its own crypto wallet.
@@ -170,7 +185,15 @@ export default function Home() {
                     </Button>
                   </div>
                 )}
-                {wallet?.address && <WalletDetails wallet={wallet} onRefresh={loadWallet} />}
+                {wallet?.address && <WalletDetails wallet={wallet} onRefresh={loadWallet} busy={walletBusy} />}
+                {!wallet?.address && walletFailed && (
+                  <div className="flex flex-col gap-3">
+                    <p className="text-muted-foreground">Couldn't reach the wallet API just now.</p>
+                    <Button onClick={loadWallet} disabled={walletBusy} variant="outline" className="w-fit font-mono tracking-wider uppercase">
+                      <RefreshCw className={cn(walletBusy && "animate-spin")} /> Retry
+                    </Button>
+                  </div>
+                )}
               </SetupStep>
 
               <SetupStep number={3} title="Chat with your agent" done={messages.some((m) => m.role === "agent" && !m.error)} last>
@@ -214,9 +237,7 @@ export default function Home() {
             <div className="flex flex-col gap-5 px-4 py-4">
               {messages.length === 0 && (
                 <div className="flex flex-col items-center gap-5 py-16 text-center">
-                  <div className="flex size-12 items-center justify-center bg-primary text-primary-foreground">
-                    <Bot className="size-6" />
-                  </div>
+                  <img src="/icon.svg" alt="Maxx logo" className="size-14" />
                   <div>
                     <p className="text-2xl font-bold tracking-tight uppercase">Ask your agent something</p>
                     <p className="mt-1 text-muted-foreground">
@@ -246,11 +267,16 @@ export default function Home() {
                   <ApprovalCard key={i} card={m} onDecide={decide} disabled={thinking} />
                 ) : (
                   <div key={i} className="flex max-w-[85%] gap-3 self-start">
-                    <div className="flex size-8 shrink-0 items-center justify-center border">
-                      <Bot className="size-4 text-primary" />
+                    <div className="flex size-8 shrink-0 items-center justify-center border bg-background">
+                      <img src="/icon.svg" alt="" className="size-6" />
                     </div>
                     <div className="flex min-w-0 flex-col gap-2">
                       {m.steps?.map((s, j) => <ToolCall key={j} step={s} />)}
+                      {m.intent && (
+                        <p className="font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
+                          intent: <span className="text-primary">{m.intent.label}</span> · {m.intent.note}
+                        </p>
+                      )}
                       <div className={cn("px-4 py-2.5 whitespace-pre-wrap", m.error ? "flex gap-2 bg-destructive/10 text-destructive" : "bg-muted")}>
                         {m.error && <CircleAlert className="mt-0.5 size-4 shrink-0" />}
                         {m.text}
@@ -337,7 +363,7 @@ function SetupStep(props: { number: number; title: string; done: boolean; last?:
   );
 }
 
-function WalletDetails({ wallet, onRefresh }: { wallet: WalletInfo; onRefresh: () => void }) {
+function WalletDetails({ wallet, onRefresh, busy }: { wallet: WalletInfo; onRefresh: () => void; busy?: boolean }) {
   const [copied, setCopied] = useState(false);
   const address = wallet.address!;
 
@@ -360,10 +386,15 @@ function WalletDetails({ wallet, onRefresh }: { wallet: WalletInfo; onRefresh: (
           ETH <span className="text-foreground">{wallet.balance}</span> · USDC{" "}
           <span className="text-foreground">{wallet.usdc}</span>
         </span>
-        <Button variant="ghost" size="icon-xs" onClick={onRefresh} aria-label="Refresh balance">
-          <RefreshCw />
+        <Button variant="ghost" size="icon-xs" onClick={onRefresh} disabled={busy} aria-label="Refresh balance">
+          <RefreshCw className={cn(busy && "animate-spin")} />
         </Button>
       </div>
+      {(wallet.balance === "unavailable" || wallet.usdc === "unavailable") && (
+        <p className="text-xs text-yellow-600 dark:text-yellow-500">
+          Balance node didn't answer in time — hit ↻ to retry.
+        </p>
+      )}
       {wallet.usdcEthereumSepolia && wallet.usdcEthereumSepolia !== "0 USDC" && (
         <p className="text-xs text-muted-foreground">
           + {wallet.usdcEthereumSepolia} found on Ethereum Sepolia — that faucet funds the wrong testnet. This agent

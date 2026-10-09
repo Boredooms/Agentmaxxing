@@ -28,11 +28,13 @@ AI agents today are boxed in by two walls: they can't **pay for things on their 
 | `get_my_wallet` | The agent's address + ETH and USDC balances (reads Base Sepolia, and Ethereum Sepolia for stranded faucet funds) | free |
 | `web_search` | Quick web search — Wikipedia + Hacker News via free JSON APIs | free |
 | `get_crypto_price` | Live crypto prices via the free CoinGecko API | free |
-| `get_country_info` | Capital, population and region of any country (REST Countries) | free |
+| `get_country_info` | Capital, population and region of any country (mledoze/countries dataset via jsDelivr + World Bank population, both keyless) | free |
 | `get_joke` | A random joke (Official Joke API) | free |
 | `roll_dice` | Rolls a cryptographically secure dice 🎲 | free |
 
 **9 tools total** — 3 of them are self-built paid APIs settled on-chain (weather, fortune, research), 6 free.
+
+**Intent layer before every turn**: each message is pre-processed by a deterministic classifier (`agent/intent.ts`) that detects the intent — research / weather / fortune / wallet / general — and only unlocks the paid tools that intent actually calls for. A general question never even sees a paid tool in its toolbox, so it can't trigger an approval card or spend a cent; a second hard guard rejects any unauthorized tool call the model still attempts. The detected intent is shown under every agent reply in the chat.
 
 ## Supported AI models
 
@@ -48,6 +50,7 @@ Older Gemini 2.x models are retired for new API keys, so the list above reflects
 
 ## Key Features
 
+- 🧭 **Intent layer (prompt pre-processing)**: messages are classified before the model sees any tools — paid APIs only unlock when the request clearly asks for them, so ordinary questions cost nothing.
 - 🤖 **A real agent loop, not a chatbot**: model → tool calls → results → model, until it answers in text — every step visible in the UI's tool inspector.
 - 💸 **An agent with its own wallet**: viem-generated EOA on Base Sepolia holding ETH for gas + USDC for spending; the wallet panel shows live balances.
 - ⛓️ **Real x402 settlement, not an IOU demo**: EIP-3009 `TransferWithAuthorization` signed by the agent, verified and submitted on-chain by a facilitator wallet — with the basescan tx hash linked from the UI.
@@ -157,7 +160,8 @@ Crawl scope: the crawler only fetches hosts on an allowlist (default: wikipedia.
 - **Testnets are not interchangeable**: faucet USDC sent to Ethereum Sepolia showed as 0 in the wallet — same address, different chain. Fixed by reading USDC (`balanceOf`) on both Sepolias so funds display wherever they landed.
 - **Rate limits matter once money is involved**: paid endpoints got per-payer sliding-window limits plus a per-IP guard; the chat endpoint (which fronts a paid LLM) got one too.
 - **A research agent is search + crawl + reasoning**: free quick hits from fixed APIs, paid deep research that actually crawls pages — and the model, not the crawler, does the synthesizing. Chat memory got a rough token window (~6k tokens) so long conversations stay inside budget.
-- Experimented with wiring **two paid endpoints** off the same wallet and free external APIs (CoinGecko, REST Countries, Open-Meteo) alongside them.
+- **Free APIs rot — plan for it**: REST Countries deprecated its v3.1 API mid-week (301 → paywalled v5), which silently broke `get_country_info`. Rebuilt it on the keyless mledoze/countries dataset + World Bank API with in-memory caching — and every outbound fetch in the app now has an explicit timeout so a dead host degrades instead of hanging the turn.
+- Experimented with wiring **two paid endpoints** off the same wallet and free external APIs (CoinGecko, jsDelivr country data, World Bank, Open-Meteo) alongside them.
 
 ## Credits
 

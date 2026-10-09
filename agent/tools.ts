@@ -24,6 +24,53 @@ export type Tool = {
   run: (args: any, ctx: { baseUrl: string }) => Promise<unknown>;
 };
 
+// ─── country facts source ─────────────────────────────────────────────────
+// REST Countries v3.1 was deprecated (301 → "migrate to v5", which needs an
+// API key), so facts come from the keyless mledoze/countries dataset on
+// jsDelivr — cached in memory for a day — plus the World Bank API for
+// population (also keyless). Both hosts are fixed literals; the only
+// variable URL segment (the ISO3 code) is strictly validated.
+type CountryRecord = {
+  name: { common: string; official: string };
+  cca2: string;
+  cca3: string;
+  capital?: string[];
+  region?: string;
+  subregion?: string;
+  flag?: string; // emoji
+  altSpellings?: string[];
+};
+let countriesCache: CountryRecord[] | null = null;
+let countriesCachedAt = 0;
+
+async function loadCountries(): Promise<CountryRecord[]> {
+  if (countriesCache && Date.now() - countriesCachedAt < 24 * 60 * 60 * 1000) return countriesCache;
+  const res = await fetch("https://cdn.jsdelivr.net/gh/mledoze/countries@master/dist/countries.json", {
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`Country dataset responded ${res.status}`);
+  countriesCache = (await res.json()) as CountryRecord[];
+  countriesCachedAt = Date.now();
+  return countriesCache;
+}
+
+/** Latest population from the World Bank (SP.POP.TOTL); null if unreachable. */
+async function populationOf(cca3: string): Promise<{ population: number; asOf: string } | null> {
+  if (!/^[A-Z]{3}$/.test(cca3)) return null;
+  try {
+    const res = await fetch(
+      `https://api.worldbank.org/v2/country/${cca3}/indicator/SP.POP.TOTL?format=json&mrnev=1`,
+      { signal: AbortSignal.timeout(8_000) }
+    );
+    if (!res.ok) return null;
+    const payload = await res.json();
+    const row = Array.isArray(payload) ? payload[1]?.[0] : null;
+    return typeof row?.value === "number" ? { population: row.value, asOf: String(row.date) } : null;
+  } catch {
+    return null;
+  }
+}
+
 export const tools: Tool[] = [
   // ─── 1. A paid API: the agent's wallet signs a payment to unlock it ───
   {
@@ -59,11 +106,13 @@ export const tools: Tool[] = [
     parameters: { type: "object", properties: {} },
     run: async () => {
       const balances = await getWalletBalances();
+      const busy = "unavailable (balance node busy — try again)";
       return {
         address: getWalletAddress(),
-        eth: balances.eth,
-        usdc: balances.usdc,
+        eth: balances.eth ?? busy,
+        usdc: balances.usdc ?? busy,
         usdcOnEthereumSepolia: balances.usdcEthereumSepolia,
+        rpcError: balances.rpcError,
         network: "Base Sepolia (testnet)",
       };
     },
@@ -83,7 +132,8 @@ export const tools: Tool[] = [
     },
     run: async ({ coin, currency = "usd" }) => {
       const res = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(coin)}&vs_currencies=${encodeURIComponent(currency)}`
+        `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(coin)}&vs_currencies=${encodeURIComponent(currency)}`,
+        { signal: AbortSignal.timeout(10_000) }
       );
       if (!res.ok) throw new Error(`CoinGecko said ${res.status}. Is "${coin}" a valid coin id?`);
       const data = await res.json();
@@ -107,17 +157,25 @@ export const tools: Tool[] = [
       required: ["country"],
     },
     run: async ({ country }) => {
-      const res = await fetch(
-        `https://restcountries.com/v3.1/name/${encodeURIComponent(country)}?fields=name,capital,population,region,flags`
-      );
-      if (!res.ok) throw new Error(`Could not find a country called "${country}".`);
-      const [data] = await res.json();
+      const q = String(country).trim().toLowerCase();
+      if (!q) throw new Error("Which country?");
+      const list = await loadCountries();
+      const names = (c: CountryRecord) =>
+        [c.name?.common, c.name?.official, ...(c.altSpellings ?? []), c.cca2, c.cca3].filter(Boolean) as string[];
+      const hit =
+        list.find((c) => names(c).some((n) => n.toLowerCase() === q)) ??
+        (q.length >= 4 ? list.find((c) => names(c).some((n) => n.toLowerCase().includes(q))) : undefined);
+      if (!hit) throw new Error(`Could not find a country called "${country}".`);
+      const pop = hit.cca3 ? await populationOf(hit.cca3) : null;
       return {
-        name: data.name?.common,
-        capital: data.capital?.[0],
-        population: data.population,
-        region: data.region,
-        flag: data.flags?.png,
+        name: hit.name.common,
+        officialName: hit.name.official,
+        capital: hit.capital?.[0] ?? null,
+        region: hit.region ?? null,
+        subregion: hit.subregion ?? null,
+        population: pop?.population ?? null,
+        populationAsOf: pop?.asOf ?? null,
+        flag: hit.flag ?? null,
       };
     },
   },
@@ -128,7 +186,7 @@ export const tools: Tool[] = [
     description: "Get a random programming-friendly joke. Use when the user wants a joke.",
     parameters: { type: "object", properties: {} },
     run: async () => {
-      const res = await fetch("https://official-joke-api.appspot.com/random_joke");
+      const res = await fetch("https://official-joke-api.appspot.com/random_joke", { signal: AbortSignal.timeout(10_000) });
       if (!res.ok) throw new Error(`Joke API said ${res.status}. Try again.`);
       return res.json();
     },

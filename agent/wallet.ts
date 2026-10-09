@@ -28,8 +28,23 @@ import { baseSepolia, sepolia } from "viem/chains";
 import { signX402Payment } from "../lib/x402";
 
 const WALLET_FILE = path.join(process.cwd(), ".agent-wallet.json");
-const chain = createPublicClient({ chain: baseSepolia, transport: http() });
-const ethereumSepolia = createPublicClient({ chain: sepolia, transport: http() });
+
+// Explicit public RPCs with a per-request timeout and a single retry. Without
+// an explicit timeout a stalled node hangs the wallet panel (and the agent's
+// get_my_wallet tool) forever — every balance read below is hard-capped.
+const BASE_SEPOLIA_RPC = process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
+const ETHEREUM_SEPOLIA_RPC = process.env.ETHEREUM_SEPOLIA_RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com";
+const RPC_TIMEOUT_MS = 8_000;
+const BALANCE_DEADLINE_MS = 12_000;
+
+const chain = createPublicClient({
+  chain: baseSepolia,
+  transport: http(BASE_SEPOLIA_RPC, { timeout: RPC_TIMEOUT_MS, retryCount: 1 }),
+});
+const ethereumSepolia = createPublicClient({
+  chain: sepolia,
+  transport: http(ETHEREUM_SEPOLIA_RPC, { timeout: RPC_TIMEOUT_MS, retryCount: 1 }),
+});
 
 // Circle's testnet USDC contracts — paid APIs are priced in USDC.
 const USDC_BASE_SEPOLIA: Address = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
@@ -69,37 +84,62 @@ export function getWalletAddress() {
 }
 
 export async function getWalletBalance() {
-  const wei = await chain.getBalance({ address: requireAccount().address });
-  return `${formatEther(wei)} ETH`;
+  const wei = await withDeadline(chain.getBalance({ address: requireAccount().address }), null);
+  return wei === null ? "unavailable (node busy)" : `${formatEther(wei)} ETH`;
+}
+
+/** Race a promise against a deadline; on timeout (or error) resolve to the
+ *  fallback instead of hanging. Balance reads must NEVER block forever. */
+function withDeadline<T>(p: Promise<T>, fallback: T): Promise<T> {
+  return new Promise<T>((resolve) => {
+    const timer = setTimeout(() => resolve(fallback), BALANCE_DEADLINE_MS);
+    p.then(
+      (v) => {
+        clearTimeout(timer);
+        resolve(v);
+      },
+      () => {
+        clearTimeout(timer);
+        resolve(fallback);
+      }
+    );
+  });
 }
 
 /** ETH + USDC balances. USDC is what the paid APIs price in. Faucets often
  *  fund Ethereum Sepolia instead of Base Sepolia, so we read USDC on both —
- *  the agent's home chain first, the other one reported separately. */
+ *  the agent's home chain first, the other one reported separately.
+ *  Any read that times out degrades to `null` (never hangs); `rpcError`
+ *  says the node was unreachable when even the home-chain read failed. */
 export async function getWalletBalances() {
   const address = requireAccount().address;
   const [eth, usdcBase, usdcEthereum] = await Promise.all([
-    chain.getBalance({ address }).then((wei) => formatEther(wei)),
-    chain
-      .readContract({
+    withDeadline(chain.getBalance({ address }).then((wei) => formatEther(wei)), null),
+    withDeadline(
+      chain.readContract({
         address: USDC_BASE_SEPOLIA,
         abi: ERC20_BALANCE_OF,
         functionName: "balanceOf",
         args: [address],
-      })
-      .then((raw) => `${formatUnits(raw, 6)} USDC`)
-      .catch(() => null),
-    ethereumSepolia
-      .readContract({
+      }).then((raw) => `${formatUnits(raw, 6)} USDC`),
+      null
+    ),
+    withDeadline(
+      ethereumSepolia.readContract({
         address: USDC_ETHEREUM_SEPOLIA,
         abi: ERC20_BALANCE_OF,
         functionName: "balanceOf",
         args: [address],
-      })
-      .then((raw) => `${formatUnits(raw, 6)} USDC`)
-      .catch(() => null),
+      }).then((raw) => `${formatUnits(raw, 6)} USDC`),
+      null
+    ),
   ]);
-  return { eth: `${eth} ETH`, usdc: usdcBase, usdcEthereumSepolia: usdcEthereum };
+  return {
+    eth,
+    usdc: usdcBase,
+    usdcEthereumSepolia: usdcEthereum,
+    rpcError: eth === null ? "Balance node did not answer in time — refresh to retry." : undefined,
+  };
 }
 
 /** Fetch a URL. If it demands payment (402), sign an EIP-3009 authorization
@@ -109,7 +149,7 @@ export async function payAndFetch(url: string) {
   if (target.protocol !== "http:" && target.protocol !== "https:") {
     throw new Error(`Refusing to fetch non-HTTP(S) URL: ${target.protocol}`);
   }
-  const first = await fetch(target);
+  const first = await fetch(target, { signal: AbortSignal.timeout(10_000) });
   if (first.status !== 402) return { data: await first.json() };
 
   const demand = await first.json();
@@ -120,7 +160,7 @@ export async function payAndFetch(url: string) {
     resource: demand.resource,
   });
 
-  const paid = await fetch(target, { headers: { "X-PAYMENT": header } });
+  const paid = await fetch(target, { headers: { "X-PAYMENT": header }, signal: AbortSignal.timeout(30_000) });
   const body = await paid.json().catch(() => ({}));
   if (paid.status !== 200) {
     // the job failed and was never settled — surface the reason, charge nothing

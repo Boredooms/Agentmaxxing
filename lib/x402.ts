@@ -246,7 +246,7 @@ export async function safeFetchJson(host: AllowedHost, path: string, params: Rec
   if (!ALLOWED_HOSTS.includes(host)) throw new Error(`Blocked host: ${host}`);
   const u = new URL(`https://${host}${path.startsWith("/") ? path : "/" + path}`);
   for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
-  const res = await fetch(u);
+  const res = await fetch(u, { signal: AbortSignal.timeout(10_000) });
   if (!res.ok) throw new Error(`${u.host} responded ${res.status}`);
   return res.json();
 }

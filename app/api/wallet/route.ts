@@ -1,6 +1,8 @@
 import { createWallet, getWalletAddress, getWalletBalances } from "@/agent/wallet";
 
-// GET /api/wallet -> the agent's wallet address and balances (or null if none yet)
+// GET /api/wallet -> the agent's wallet address and balances (or null if none yet).
+// Balance reads are hard-capped server-side (see agent/wallet.ts), so this always
+// answers quickly; unreachable nodes come back as "unavailable" + rpcError.
 export async function GET() {
   const address = getWalletAddress();
   if (!address) return Response.json({ address: null });
@@ -11,6 +13,7 @@ export async function GET() {
     balance: balances?.eth ?? "unavailable",
     usdc: balances?.usdc ?? "unavailable",
     usdcEthereumSepolia: balances?.usdcEthereumSepolia ?? null,
+    rpcError: balances?.rpcError ?? null,
   });
 }
 
