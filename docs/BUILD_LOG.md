@@ -176,6 +176,8 @@ The on-chain testnet transactions above are real Base Sepolia transactions; no m
 
 ### Push status
 
-- **Nothing was committed or pushed.** The working tree is ready for review; the user holds the push.
+- **Pushed.** `daaec88` is on `origin/main`; the working tree is clean and `main` matches the remote.
+- The remote had gained `BUILD_PROMPT_VANTA.md` after this branch was cut, so the local commit was rebased onto `origin/main` before pushing.
+- GitHub render checked: the README title, banner image, 48 relative Markdown targets across the docs, `SUBMISSION.md`, the demo MP4 page and the 7,089,440-byte raw download all resolve.
 - The existing Vercel deployment was **not redeployed**.
-- The Week 3 crypto MP4 is local. The existing Google Drive link is the Week 1 explainer, not the crypto cut.
+- The Week 3 crypto MP4 is committed and downloadable from GitHub. It is not uploaded to a public video host; the Google Drive link is still the Week 1 explainer, not the crypto cut.
