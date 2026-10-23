@@ -7,16 +7,18 @@
 | Item | Link |
 | --- | --- |
 | GitHub repository | <https://github.com/Boredooms/Agentmaxxing> |
+| Week 3 crypto demo (watch) | [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view) |
 | Week 3 crypto demo (local file) | [`artifacts/demo/vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) |
+| X launch kit | [`artifacts/social/X_CONTENT_PLAN.md`](artifacts/social/X_CONTENT_PLAN.md) |
 | Crypto demo poster | [`artifacts/demo/crypto-poster.png`](artifacts/demo/crypto-poster.png) |
 | Crypto shot list + narration | [`artifacts/demo/CRYPTO_DEMO_SCRIPT.md`](artifacts/demo/CRYPTO_DEMO_SCRIPT.md) |
 | Raw capture + chain receipt | [`artifacts/demo/crypto/run.json`](artifacts/demo/crypto/run.json) |
 | Week 1 explainer (hosted) | [Google Drive](https://drive.google.com/file/d/1WK4hn56ABNUuTaWi2XbBjuhAqFMdZNRw/view) |
 | Brand kit | [`public/brand/vanta-brand-kit.zip`](public/brand/vanta-brand-kit.zip) |
-| X account (supplied) | <https://x.com/nightproof67> |
+| X account | <https://x.com/vantanss7> |
 
-The Google Drive link above is the **Week 1 explainer**. It shows the denial path. The Week 3 crypto demo is the local
-MP4; upload it to the submission drive or a public video host before submitting a public link.
+The Week 3 Google Drive file is the crypto cut and is byte-identical to the committed 7,089,440-byte master
+(SHA-256 `b46175c6…eaf917`). The other Google Drive link is the Week 1 explainer, which shows the denial path.
 
 ## Crypto proof
 
@@ -39,8 +41,9 @@ MP4; upload it to the submission drive or a public video host before submitting 
 - [x] On-chain receipt — real transaction hash and block shown in the workspace and the demo
 - [x] Demo/video — 57.88s, 1920×1080, H.264 + AAC stereo, real settlement
 - [x] Repository docs — README, build log, crypto shot list and raw capture record
+- [x] Public crypto video URL — [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view)
+- [x] X account and launch kit — <https://x.com/vantanss7> · [`artifacts/social/X_CONTENT_PLAN.md`](artifacts/social/X_CONTENT_PLAN.md)
 - [ ] Public live deployment — existing Vercel deployment has not been re-verified or redeployed
-- [ ] Public crypto video URL — upload the local MP4 before submitting
 
 ## Run locally
 

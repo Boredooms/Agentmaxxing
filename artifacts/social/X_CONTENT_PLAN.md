@@ -1,0 +1,281 @@
+# VANTA — X launch kit
+
+**Account:** [@vantanss7](https://x.com/vantanss7)
+
+**Goal:** turn the Week 3 build into a clear, evidence-led launch without claiming mainnet readiness.
+
+**Format:** 10 standalone posts, each with one 1600×900 frame and alt text. All copy below is under X's 280-character weighted limit.
+
+## Before the first post
+
+| Item | Do this |
+| --- | --- |
+| Profile picture | Upload [`../../public/brand/vanta-x-pfp.png`](../../public/brand/vanta-x-pfp.png) |
+| Header | Upload [`../../public/brand/vanta-x-banner.png`](../../public/brand/vanta-x-banner.png) |
+| Display name | **VANTA** |
+| Bio | `Observable work agent. Real tools, cited sources, human-approved x402 payments on Base Sepolia. Give it a job. Keep the receipts.` |
+| Location | `Base Sepolia testnet` |
+| Website | `https://github.com/Boredooms/Agentmaxxing` |
+| Pinned post | Post 01 after it goes live |
+
+**Cadence:** five days, two posts per day. Suggested slots are 11:30 and 19:30 IST; move them if your audience is elsewhere. Post 01 first and pin it. Do not publish all ten at once.
+
+**Tagging:** `@riseinweb3` appears twice — the launch post and the final submission post. Do not add it to every reply. Hashtags are used sparingly: `#AIAgents`, `#x402`, `#BaseSepolia`.
+
+**Voice rules:** testnet only; no mainnet claim; no invented balance; say “approval” only when describing the server-enforced gate. The demo and receipt are the proof.
+
+## The ten posts
+
+### 01 — The wallet
+
+**File:** [`x/01-wallet.png`](x/01-wallet.png) · **Slot:** Day 1, 11:30 IST · **Goal:** establish the product and the Week 3 context
+
+**Copy (192/280):**
+
+```text
+Your agent has a wallet.
+
+Now give it a job.
+
+Base Sepolia. 18.87 testnet USDC. A real plan, real tools, and a human approval before any paid call.
+
+Week 3, built for @riseinweb3. 🧾 #AIAgents
+```
+
+**Alt text:**
+`VANTA field-manual card. A real Base Sepolia agent wallet shows address 0xDa83…bAfe, 0.0060 ETH for gas and 18.87 testnet USDC. Headline: It has a wallet. Now give it a job.`
+
+**Reply seed:** `What is the first paid call you would approve for an agent?`
+
+---
+
+### 02 — The boundary
+
+**File:** [`x/02-approval.png`](x/02-approval.png) · **Slot:** Day 1, 19:30 IST · **Goal:** make the human approval gate the differentiator
+
+**Copy (214/280):**
+
+```text
+When a tool costs money, the loop stops.
+
+Exact call. Exact price (0.01 USDC). Exact network. A single-use approval, 5-minute expiry.
+
+Deny it and the paid tool never runs.
+
+Not a popup. A server-enforced boundary.
+```
+
+**Alt text:**
+`VANTA payment approval card for get_weather in Mumbai: 0.01 USDC, Base Sepolia testnet, approve or deny, five-minute expiry.`
+
+**Reply seed:** `The approval is consumed once. A replay of the same id returns 404.`
+
+---
+
+### 03 — The protocol
+
+**File:** [`x/03-x402.png`](x/03-x402.png) · **Slot:** Day 2, 11:30 IST · **Goal:** explain x402 in plain language
+
+**Copy (226/280):**
+
+```text
+x402 is HTTP 402 for agents.
+
+The paid endpoint returns a challenge. The agent signs an EIP-3009 authorization. A facilitator verifies it and settles USDC on Base.
+
+No subscription. No invoice. A machine-payable request. #x402
+```
+
+**Alt text:**
+`Cobalt x402 diagram with three steps: challenge, sign with EIP-3009, settle test USDC on Base Sepolia. A large ghost 402 sits behind the steps.`
+
+**Reply seed:** `The challenge names the price and network before anything is signed.`
+
+---
+
+### 04 — The settlement
+
+**File:** [`x/04-settlement.png`](x/04-settlement.png) · **Slot:** Day 2, 19:30 IST · **Goal:** post the public on-chain proof
+
+**Copy (191/280):**
+
+```text
+0.01 USDC. On chain. For a weather call.
+
+get_weather → x402 challenge → EIP-3009 signature → Base Sepolia settlement.
+
+Tx 0x9b376282…52f9
+Block 49,311,297
+Status 0x1
+
+https://sepolia.basescan.org/tx/0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9
+```
+
+**Alt text:**
+`VANTA settlement card with a dark scene, the real trace for get_weather, and a receipt strip reading SETTLED 0.01 USDC with transaction 0x9b376282.`
+
+**Reply seed:** `Open the receipt. The wallet moved by exactly the tool price.`
+
+---
+
+### 05 — The delta
+
+**File:** [`x/05-delta.png`](x/05-delta.png) · **Slot:** Day 3, 11:30 IST · **Goal:** prove there is no hidden fee
+
+**Copy (185/280):**
+
+```text
+The receipt is the receipt.
+
+Wallet before: 18.87 USDC
+Wallet after: 18.86 USDC
+Delta: 0.01 USDC — exactly the tool price.
+
+No hidden fee. No invented balance. Open the tx and check it.
+```
+
+**Alt text:**
+`Two VANTA wallet cards: before with 18.87 USDC and after with 18.86 USDC, separated by an arrow labeled 0.01 USDC for get_weather.`
+
+**Reply seed:** `18.87 → 18.86. The delta is the receipt.`
+
+---
+
+### 06 — The trace
+
+**File:** [`x/06-trace.png`](x/06-trace.png) · **Slot:** Day 3, 19:30 IST · **Goal:** show observability as a product property
+
+**Copy (201/280):**
+
+```text
+Every step leaves a mark.
+
+Input, output, duration, approval state, settlement hash. The trace is generated by the same server loop that does the work.
+
+Observability isn't a dashboard bolted on after.
+```
+
+**Alt text:**
+`VANTA execution trace for get_weather showing input, output, 6.74 seconds, 14 events and a settled 0.01 USDC receipt.`
+
+**Reply seed:** `The trace is not a log viewer. It is the execution record.`
+
+---
+
+### 07 — The limit
+
+**File:** [`x/07-testnet.png`](x/07-testnet.png) · **Slot:** Day 4, 11:30 IST · **Goal:** make the testnet boundary a feature
+
+**Copy (191/280):**
+
+```text
+Testnet only. On purpose.
+
+No mainnet path. The wallet holds test USDC and test ETH. The capability is real; the blast radius is contained.
+
+Ship the boundary before the balance. #BaseSepolia
+```
+
+**Alt text:**
+`Dark VANTA card with a TESTNET stamp, chain 84532, wallet 0xDa83…bAfe, no mainnet path and approval required.`
+
+**Reply seed:** `A working agent does not need real funds to prove the flow.`
+
+---
+
+### 08 — The work
+
+**File:** [`x/08-tools.png`](x/08-tools.png) · **Slot:** Day 4, 19:30 IST · **Goal:** widen the story beyond payments
+
+**Copy (206/280):**
+
+```text
+16 tools. 13 free. 3 paid.
+
+Calculate, convert, format, summarize, plan, check a URL, search. They run without a wallet.
+
+Paid tools are reserved for work that actually needs them. The price list is public.
+```
+
+**Alt text:**
+`VANTA tools index with 16 tools total, 13 free and 3 paid, showing the free tools list and testnet badge.`
+
+**Reply seed:** `The free tier is not a teaser. It is the product.`
+
+---
+
+### 09 — The demo
+
+**File:** [`x/09-demo.png`](x/09-demo.png) · **Slot:** Day 5, 11:30 IST · **Goal:** make the film the proof, not a trailer
+
+**Copy (161/280):**
+
+```text
+57.88 seconds of evidence.
+
+Real capture. Real approval. Real x402 settlement. No mocked UI.
+
+Six scenes. One real testnet settlement.
+
+The demo is the evidence.
+```
+
+**Alt text:**
+`VANTA crypto demo poster with the headline One click, one receipt, the transaction 0x9b376282 and block 49,311,297.`
+
+**Reply seed:** `Six scenes, one real settlement. The film was cut from the running app.`
+
+---
+
+### 10 — The evidence
+
+**File:** [`x/10-close.png`](x/10-close.png) · **Slot:** Day 5, 19:30 IST · **Goal:** close with the demo, repo and submission
+
+**Copy (225/280):**
+
+```text
+Week 3 submission for @riseinweb3.
+
+VANTA: give it a job. Keep the receipts.
+
+Real tools, human-approved x402 payments, and a 0.01 USDC settlement on Base Sepolia.
+
+Watch: https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view
+Code: https://github.com/Boredooms/Agentmaxxing
+```
+
+**Alt text:**
+`VANTA cobalt end card with the V mark, the line Give it a job. Keep the receipts, the GitHub repo, the Google Drive demo and @vantanss7.`
+
+**Reply seed:** `Repo, demo and receipt are all public. Feedback welcome.`
+
+---
+
+## Five-post thread cut (optional)
+
+If you prefer one thread instead of ten standalone posts, use **01 → 02 → 03 → 04 → 10** with the same images and copy. That is the shortest complete story: wallet → boundary → protocol → proof → submission.
+
+## Reply playbook
+
+- Reply to every substantive comment for the first 90 minutes. Ask one concrete question, not “thoughts?”
+- Quote post 04 with one line: `This is the whole thesis: the receipt is the product.`
+- Do not argue about mainnet. The answer is: testnet only, no mainnet path, boundary shipped first.
+- Pin 01 after posting. Keep 10 as the current pinned submission post once the launch week ends.
+- Tag `@riseinweb3` on 01 and 10 only. Tagging on every post reads as spam.
+
+## Metrics to watch
+
+- Saves/bookmarks on 02 and 05 — the boundary and the delta are the differentiators.
+- Link clicks on 10 — the demo and repo.
+- Profile visits after 01 — the handle should be discoverable from the first frame.
+- Replies that ask “how does approval work?” — answer with 02 and the receipt, not a pitch.
+
+## Files
+
+| File | Use |
+| --- | --- |
+| `x/01-wallet.png` … `x/10-close.png` | Attach one per post |
+| `../../artifacts/demo/vanta-crypto-demo.mp4` | Local master of the demo |
+| `../demo/crypto/run.json` | Raw capture and chain receipt |
+| `../../public/brand/vanta-x-pfp.png` | Profile picture |
+| `../../public/brand/vanta-x-banner.png` | Header |

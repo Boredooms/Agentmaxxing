@@ -14,14 +14,15 @@ VANTA is an observable autonomous work agent. It takes a goal, classifies what t
   <code>NEXT.JS 16</code> · <code>REACT 19</code> · <code>16 TOOLS</code> · <code>BASE SEPOLIA TESTNET</code> · <code>HUMAN APPROVAL</code>
 </p>
 
-- **Week 3 crypto demo — real settlement:** [`artifacts/demo/vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) — 57.88s, 1920×1080, **0.01 USDC settled on Base Sepolia** ([tx `0x9b376282…52f9`](https://sepolia.basescan.org/tx/0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9), block 49,311,297, status `0x1`)
-- **Watch the 64-second product film:** [Google Drive](https://drive.google.com/file/d/1WK4hn56ABNUuTaWi2XbBjuhAqFMdZNRw/view) — the verified local master is [`artifacts/demo/vanta-explainer.mp4`](artifacts/demo/vanta-explainer.mp4)
+- **Week 3 crypto demo — real settlement:** [watch on Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view) · local master [`artifacts/demo/vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) — 57.88s, 1920×1080, **0.01 USDC settled on Base Sepolia** ([tx `0x9b376282…52f9`](https://sepolia.basescan.org/tx/0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9), block 49,311,297, status `0x1`)
+- **Week 1 product film:** [Google Drive](https://drive.google.com/file/d/1WK4hn56ABNUuTaWi2XbBjuhAqFMdZNRw/view) — the verified local master is [`artifacts/demo/vanta-explainer.mp4`](artifacts/demo/vanta-explainer.mp4)
 - **Brand kit:** [download the ZIP](public/brand/vanta-brand-kit.zip) — X profile, X header, social card, SVG marks and product captures
-- **Week 3 submission sheet:** [`SUBMISSION.md`](SUBMISSION.md) — links, chain proof and the remaining upload step
+- **X launch kit:** [`artifacts/social/X_CONTENT_PLAN.md`](artifacts/social/X_CONTENT_PLAN.md) — 10 ready posts with 1600×900 frames and alt text
+- **Week 3 submission sheet:** [`SUBMISSION.md`](SUBMISSION.md) — links, chain proof and the remaining live-deploy step
 - **Local workspace:** run `npm run dev` and open the printed URL; open `/brand` for the live asset page
 - **Existing production deployment:** <https://agentmaxxing-boredooms-projects.vercel.app> — not redeployed or re-verified during this build
 - **Repository:** <https://github.com/Boredooms/Agentmaxxing>
-- **Product X account (supplied):** <https://x.com/nightproof67> — a separate VANTA product handle is **pending creation**; no new handle is claimed here
+- **Product X account:** <https://x.com/vantanss7> — the live VANTA product account
 
 > Naming note: **VANTA** is a working product name used consistently in the UI and metadata. Its domain/trademark availability has **not** been checked. The GitHub repository, Vercel project and domain were not renamed.
 
@@ -56,7 +57,7 @@ VANTA has a **server-held Base Sepolia agent wallet**, a real x402 paid endpoint
 | Crypto capability | Paid tools are x402 resources: challenge → EIP-3009 signature → facilitator verification → USDC settlement |
 | Human boundary | Opaque, single-use, 5-minute approval id; denial never invokes the paid tool |
 | On-chain proof | [0.01 USDC weather settlement](https://sepolia.basescan.org/tx/0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9) — block 49,311,297, status `0x1`; wallet 18.87 → 18.86 USDC |
-| Demo | [`vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) + [`CRYPTO_DEMO_SCRIPT.md`](artifacts/demo/CRYPTO_DEMO_SCRIPT.md) + [`crypto/run.json`](artifacts/demo/crypto/run.json) |
+| Demo | [watch on Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view) · [`vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) + [`CRYPTO_DEMO_SCRIPT.md`](artifacts/demo/CRYPTO_DEMO_SCRIPT.md) + [`crypto/run.json`](artifacts/demo/crypto/run.json) |
 
 **The crypto path in one line:** classify intent → select a paid tool → hold the loop → human approves → consume the approval once → verify the x402/EIP-3009 demand and nonce → settle testnet USDC on Base Sepolia → record the tx hash in the trace.
 
@@ -250,6 +251,7 @@ The landing page now also shows these captures as **printed evidence** — the a
 
 | Item | Detail |
 | --- | --- |
+| Watch online | [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view) |
 | Final film | [`artifacts/demo/vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) (7.1 MB) |
 | Poster | [`artifacts/demo/crypto-poster.png`](artifacts/demo/crypto-poster.png) |
 | Settlement | **0.01 USDC**, Base Sepolia, tx [`0x9b376282…52f9`](https://sepolia.basescan.org/tx/0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9) |
@@ -387,10 +389,11 @@ Built on the [agentmaxxin](https://www.npmjs.com/package/agentmaxxin) starter fo
 
 - **Working crypto-enabled agent:** yes — server-held Base Sepolia wallet, x402 challenge, EIP-3009 verification, testnet USDC settlement, human approval and an on-chain receipt.
 - **GitHub repository:** <https://github.com/Boredooms/Agentmaxxing>
-- **Demo/video:** [`artifacts/demo/vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) — **57.88s**, real 0.01 USDC settlement. Upload this file to the submission drive or a public video host before submitting; the existing Google Drive link is the **Week 1 explainer**, not this cut.
+- **Demo/video:** [watch on Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view) · [`artifacts/demo/vanta-crypto-demo.mp4`](artifacts/demo/vanta-crypto-demo.mp4) — **57.88s**, real 0.01 USDC settlement. The hosted copy is byte-identical to the committed master.
 - **Demo notes:** [`artifacts/demo/CRYPTO_DEMO_SCRIPT.md`](artifacts/demo/CRYPTO_DEMO_SCRIPT.md) · **raw proof:** [`artifacts/demo/crypto/run.json`](artifacts/demo/crypto/run.json)
+- **X launch kit:** [`artifacts/social/X_CONTENT_PLAN.md`](artifacts/social/X_CONTENT_PLAN.md) — 10 posts, images and alt text.
 - **Live deployment:** the existing Vercel deployment is **not** re-verified against this build; run locally or redeploy before sharing a live link.
-- **Social:** <https://x.com/nightproof67> (supplied account). No new VANTA handle is claimed until it is actually created.
+- **Social:** <https://x.com/vantanss7> — live VANTA product account.
 
 Submission tagging guidance: include **@riseinweb3** when posting the demo/submission. The challenge attribution is intentionally kept here rather than dominating the product UI.
 

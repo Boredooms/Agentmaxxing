@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/toolkit.test.ts tests/approvals.test.ts",
     "brand:assets": "node scripts/brand/build-assets.mjs",
+    "social:assets": "node scripts/social/build-x-posts.mjs",
     "demo:record": "node scripts/demo/record.mjs",
     "demo:crypto": "node scripts/demo/crypto-run.mjs"
   },

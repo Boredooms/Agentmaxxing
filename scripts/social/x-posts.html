@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VANTA X post frames</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap");
+
+      :root {
+        --paper: #ede7db;
+        --cream: #f7f3ea;
+        --ink: #14161a;
+        --muted: #6a6459;
+        --cobalt: #1b2be0;
+        --orange: #ff4d12;
+        --line: rgba(20, 22, 26, 0.24);
+        --cream-line: rgba(247, 243, 234, 0.24);
+        --display: "Bricolage Grotesque", "Arial Black", Arial, sans-serif;
+        --body: "Public Sans", "Segoe UI", Arial, sans-serif;
+        --mono: "IBM Plex Mono", "Courier New", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #7c756a;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 42px;
+        padding: 36px;
+      }
+
+      .post {
+        position: relative;
+        flex: none;
+        width: 1600px;
+        height: 900px;
+        overflow: hidden;
+        padding: 42px 60px 30px;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(to right, rgba(27, 43, 224, 0.07) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(27, 43, 224, 0.07) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.32;
+        background-image: radial-gradient(rgba(20, 22, 26, 0.25) 0.55px, transparent 0.55px);
+        background-size: 5px 5px;
+      }
+
+      .top,
+      .foot,
+      .main {
+        position: relative;
+        z-index: 2;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid currentColor;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 35px;
+        height: 35px;
+        place-items: center;
+        background: var(--cobalt);
+        color: var(--cream);
+        font-family: var(--display);
+        font-size: 25px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .brand-rule {
+        width: 1px;
+        height: 28px;
+        background: currentColor;
+        opacity: 0.45;
+      }
+
+      .brand-sub {
+        max-width: 160px;
+        font-size: 8px;
+        font-weight: 400;
+        line-height: 1.45;
+        letter-spacing: 0.13em;
+        opacity: 0.72;
+      }
+
+      .series {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0.72;
+      }
+
+      .number {
+        font-weight: 600;
+        opacity: 0.82;
+      }
+
+      .main {
+        display: grid;
+        grid-template-columns: 748px 1fr;
+        gap: 44px;
+        height: 686px;
+        align-items: center;
+      }
+
+      .copy {
+        min-width: 0;
+      }
+
+      .kicker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 19px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+      }
+
+      .kicker::before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: var(--orange);
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 780px;
+        font-family: var(--display);
+        font-size: 92px;
+        font-weight: 800;
+        line-height: 0.9;
+        letter-spacing: -0.057em;
+      }
+
+      h1.small {
+        font-size: 82px;
+      }
+
+      h1.tiny {
+        font-size: 75px;
+      }
+
+      .blue {
+        color: var(--cobalt);
+      }
+
+      .orange {
+        color: var(--orange);
+      }
+
+      .cream {
+        color: var(--cream);
+      }
+
+      .lede {
+        max-width: 610px;
+        margin: 24px 0 0;
+        color: var(--muted);
+        font-size: 19px;
+        line-height: 1.5;
+      }
+
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 30px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .fact {
+        min-width: 0;
+        padding: 13px 16px 13px 0;
+      }
+
+      .fact + .fact {
+        padding-left: 17px;
+        border-left: 1px solid var(--line);
+      }
+
+      .fact label {
+        display: block;
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .fact b {
+        display: block;
+        margin-top: 6px;
+        overflow: hidden;
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .media {
+        position: relative;
+        min-width: 0;
+      }
+
+      .shot {
+        position: relative;
+        border: 2px solid currentColor;
+        background: var(--cream);
+        box-shadow: 13px 13px 0 var(--cobalt);
+      }
+
+      .shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .shot.tools img {
+        height: 395px;
+        object-fit: cover;
+        object-position: top left;
+      }
+
+      .shot.trace img {
+        height: 430px;
+        object-fit: cover;
+        object-position: top left;
+      }
+
+      .shot-tag {
+        position: absolute;
+        top: -15px;
+        right: 18px;
+        padding: 6px 9px 5px;
+        background: var(--orange);
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .shot-tag.blue {
+        background: var(--cobalt);
+        color: var(--cream);
+      }
+
+      .caption {
+        margin-top: 18px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 9px;
+        line-height: 1.5;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .foot {
+        position: absolute;
+        right: 60px;
+        bottom: 27px;
+        left: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding-top: 12px;
+        border-top: 1px solid currentColor;
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.68;
+      }
+
+      .foot strong {
+        font-weight: 500;
+        opacity: 1;
+      }
+
+      .dark {
+        background: var(--ink);
+        color: var(--cream);
+      }
+
+      .dark .grid {
+        background-image:
+          linear-gradient(to right, rgba(247, 243, 234, 0.075) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(247, 243, 234, 0.075) 1px, transparent 1px);
+      }
+
+      .dark .grain {
+        opacity: 0.4;
+        background-image: radial-gradient(rgba(247, 243, 234, 0.2) 0.55px, transparent 0.55px);
+      }
+
+      .dark .lede,
+      .dark .caption {
+        color: rgba(247, 243, 234, 0.68);
+      }
+
+      .dark .facts,
+      .dark .fact + .fact,
+      .dark .foot {
+        border-color: var(--cream-line);
+      }
+
+      .dark .fact label {
+        color: rgba(247, 243, 234, 0.55);
+      }
+
+      .cobalt {
+        background: var(--cobalt);
+        color: var(--cream);
+      }
+
+      .cobalt .grid {
+        background-image:
+          linear-gradient(to right, rgba(247, 243, 234, 0.1) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(247, 243, 234, 0.1) 1px, transparent 1px);
+      }
+
+      .cobalt .grain {
+        opacity: 0.32;
+        background-image: radial-gradient(rgba(247, 243, 234, 0.22) 0.55px, transparent 0.55px);
+      }
+
+      .cobalt .lede,
+      .cobalt .caption {
+        color: rgba(247, 243, 234, 0.7);
+      }
+
+      .cobalt .facts,
+      .cobalt .fact + .fact,
+      .cobalt .foot {
+        border-color: var(--cream-line);
+      }
+
+      .cobalt .fact label {
+        color: rgba(247, 243, 234, 0.58);
+      }
+
+      .cobalt .kicker {
+        color: var(--orange);
+      }
+
+      .cobalt .blue {
+        color: var(--cream);
+      }
+
+      /* p03 - protocol */
+      .protocol-wrap {
+        position: relative;
+        height: 480px;
+      }
+
+      .ghost-402 {
+        position: absolute;
+        top: -70px;
+        right: -28px;
+        color: rgba(247, 243, 234, 0.08);
+        font-family: var(--display);
+        font-size: 270px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.08em;
+      }
+
+      .protocol {
+        position: absolute;
+        inset: 40px 0 0 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0;
+      }
+
+      .protocol-step {
+        position: relative;
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 15px;
+        align-items: start;
+        padding: 18px 20px 18px 18px;
+        border: 1px solid rgba(247, 243, 234, 0.48);
+        background: rgba(247, 243, 234, 0.035);
+      }
+
+      .protocol-step + .protocol-step {
+        border-top: 0;
+      }
+
+      .protocol-num {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        opacity: 0.55;
+      }
+
+      .protocol-step b {
+        display: block;
+        font-family: var(--mono);
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+      }
+
+      .protocol-step em {
+        display: block;
+        margin-top: 4px;
+        color: rgba(247, 243, 234, 0.62);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-style: normal;
+        letter-spacing: 0.08em;
+        line-height: 1.5;
+        text-transform: uppercase;
+      }
+
+      .protocol-step.active {
+        background: var(--orange);
+        color: var(--ink);
+      }
+
+      .protocol-step.active em {
+        color: rgba(20, 22, 26, 0.78);
+      }
+
+      .protocol-step.active .protocol-num {
+        opacity: 0.7;
+      }
+
+      .protocol-arrow {
+        padding-left: 20px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 18px;
+        line-height: 0.7;
+      }
+
+      /* p05 - before / after */
+      .delta-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .delta-row {
+        display: grid;
+        grid-template-columns: 74px 1fr;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .delta-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .delta-row .shot {
+        box-shadow: 9px 9px 0 var(--cobalt);
+      }
+
+      .delta-row .shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .delta-arrow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-left: 88px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .delta-arrow::before {
+        content: "↓";
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      /* p07 - testnet */
+      .limit-card {
+        position: relative;
+        margin-top: 14px;
+        border: 2px solid var(--cream);
+        background: rgba(247, 243, 234, 0.035);
+        box-shadow: 13px 13px 0 var(--orange);
+      }
+
+      .limit-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--cream-line);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .limit-stamp {
+        padding: 6px 10px;
+        background: var(--orange);
+        color: var(--ink);
+        font-weight: 600;
+        transform: rotate(-3deg);
+      }
+
+      .limit-body {
+        padding: 22px 20px 18px;
+      }
+
+      .limit-big {
+        font-family: var(--display);
+        font-size: 62px;
+        font-weight: 800;
+        line-height: 0.9;
+        letter-spacing: -0.055em;
+      }
+
+      .limit-rule {
+        height: 1px;
+        margin: 18px 0;
+        background: var(--cream-line);
+      }
+
+      .limit-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--cream-line);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .limit-row:last-child {
+        border-bottom: 0;
+      }
+
+      .limit-row span {
+        color: rgba(247, 243, 234, 0.56);
+      }
+
+      .limit-row b {
+        font-weight: 500;
+        text-align: right;
+      }
+
+      .limit-foot {
+        margin-top: 22px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        line-height: 1.5;
+        text-transform: uppercase;
+      }
+
+      /* p10 - close */
+      .close-mark {
+        width: 124px;
+        height: 124px;
+        margin-bottom: 24px;
+      }
+
+      .close-links {
+        margin-top: 0;
+        box-shadow: 13px 13px 0 var(--orange);
+      }
+
+      .close-link {
+        padding: 20px 20px 18px;
+        border-bottom: 1px solid var(--cream-line);
+      }
+
+      .close-link:last-child {
+        border-bottom: 0;
+      }
+
+      .close-link label {
+        display: block;
+        color: rgba(247, 243, 234, 0.55);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .close-link b {
+        display: block;
+        margin-top: 6px;
+        font-family: var(--mono);
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: 0.015em;
+      }
+
+      .close-link em {
+        display: block;
+        margin-top: 10px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 9px;
+        font-style: normal;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .close-note {
+        margin-top: 26px;
+        color: rgba(247, 243, 234, 0.62);
+        font-family: var(--mono);
+        font-size: 10px;
+        line-height: 1.6;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <article class="post" id="p01">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">01 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The wallet</p>
+          <h1>It has a wallet.<br /><span class="blue">Now give it a job.</span></h1>
+          <p class="lede">
+            Base Sepolia testnet. 18.87 USDC for work. A server-held key, a human approval, and no mainnet path.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Network</label><b>Base Sepolia</b></div>
+            <div class="fact"><label>Balance</label><b>18.87 USDC</b></div>
+            <div class="fact"><label>Keys</label><b>Server-held</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="shot">
+            <img src="../../video/public/images/crypto-wallet-before-top.png" alt="VANTA agent wallet showing Base Sepolia testnet, 0.0060 ETH and 18.87 USDC" />
+            <span class="shot-tag blue">LIVE READ</span>
+          </div>
+          <p class="caption">Real wallet card. Real balance read. Testnet only.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>Give it a job. Keep the receipts.</span>
+        <span>BASE SEPOLIA / TESTNET</span>
+      </footer>
+    </article>
+
+    <article class="post" id="p02">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">02 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The boundary</p>
+          <h1 class="small">Nothing runs<br /><span class="blue">until you say so.</span></h1>
+          <p class="lede">
+            The exact call, the price, the network. A single-use approval with a five-minute expiry.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Tool</label><b>get_weather</b></div>
+            <div class="fact"><label>Price</label><b>0.01 USDC</b></div>
+            <div class="fact"><label>Expiry</label><b>05:00</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="shot">
+            <img src="../../artifacts/demo/crypto/approval.png" alt="VANTA payment approval for get_weather in Mumbai, 0.01 USDC on Base Sepolia testnet" />
+            <span class="shot-tag">APPROVAL REQUIRED</span>
+          </div>
+          <p class="caption">Deny it and the paid tool never runs.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>Not a popup. A server-enforced boundary.</span>
+        <span>0.01 USDC / BASE SEPOLIA</span>
+      </footer>
+    </article>
+
+    <article class="post cobalt" id="p03">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" style="background: var(--cream); color: var(--cobalt)">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">03 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The protocol</p>
+          <h1 class="small">HTTP 402.<br /><span class="orange">But for agents.</span></h1>
+          <p class="lede">
+            A paid endpoint returns a challenge. The agent signs an EIP-3009 authorization. A facilitator verifies it and settles USDC on Base.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Standard</label><b>x402</b></div>
+            <div class="fact"><label>Signature</label><b>EIP-3009</b></div>
+            <div class="fact"><label>Asset</label><b>Test USDC</b></div>
+          </div>
+        </section>
+        <aside class="media protocol-wrap">
+          <span class="ghost-402" aria-hidden="true">402</span>
+          <div class="protocol">
+            <div class="protocol-step">
+              <span class="protocol-num">01</span>
+              <div><b>CHALLENGE</b><em>HTTP 402 + exact price + network</em></div>
+            </div>
+            <div class="protocol-arrow">↓</div>
+            <div class="protocol-step">
+              <span class="protocol-num">02</span>
+              <div><b>SIGN</b><em>Agent authorizes the transfer</em></div>
+            </div>
+            <div class="protocol-arrow">↓</div>
+            <div class="protocol-step active">
+              <span class="protocol-num">03</span>
+              <div><b>SETTLE</b><em>Facilitator submits on Base Sepolia</em></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>No subscription. No invoice. A machine-payable request.</span>
+        <span>X402 / TESTNET</span>
+      </footer>
+    </article>
+
+    <article class="post dark" id="p04">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" style="background: var(--orange); color: var(--ink)">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">04 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">Settlement</p>
+          <h1>0.01 USDC.<br /><span class="orange">On chain.</span><br />For real.</h1>
+          <p class="lede">
+            A weather call paid in testnet USDC. The transaction is public; the receipt is in the trace.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Block</label><b>49,311,297</b></div>
+            <div class="fact"><label>Status</label><b>0x1</b></div>
+            <div class="fact"><label>Gas</label><b>85,788</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="shot">
+            <img src="../../artifacts/demo/crypto/receipt.png" alt="VANTA settlement receipt showing 0.01 USDC paid, transaction 0x9b376282 and status 0x1" />
+            <span class="shot-tag blue">ON-CHAIN</span>
+          </div>
+          <p class="caption">Tx 0x9b376282…52f9 · Base Sepolia.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>Real settlement. Real receipt.</span>
+        <span>BLOCK 49,311,297</span>
+      </footer>
+    </article>
+
+    <article class="post" id="p05">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">05 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The delta</p>
+          <h1>18.87 → 18.86.</h1>
+          <p class="lede">
+            The wallet moved by exactly the price of the tool. No hidden fee. No invented balance. Open the tx and check it.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Delta</label><b>0.01 USDC</b></div>
+            <div class="fact"><label>Tx</label><b>0x9b376282…52f9</b></div>
+            <div class="fact"><label>Block</label><b>49,311,297</b></div>
+          </div>
+        </section>
+        <aside class="media delta-stack">
+          <div class="delta-row">
+            <span class="delta-label">Before</span>
+            <div class="shot"><img src="../../video/public/images/crypto-wallet-before-top.png" alt="Wallet before settlement: 18.87 USDC" /></div>
+          </div>
+          <div class="delta-arrow">0.01 USDC for get_weather</div>
+          <div class="delta-row">
+            <span class="delta-label">After</span>
+            <div class="shot"><img src="../../video/public/images/crypto-wallet-after-top.png" alt="Wallet after settlement: 18.86 USDC" /></div>
+          </div>
+          <p class="caption">Same address. Same chain. The price, exactly.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>The receipt is the receipt.</span>
+        <span>18.87 → 18.86 USDC</span>
+      </footer>
+    </article>
+
+    <article class="post" id="p06">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">06 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The trace</p>
+          <h1 class="small">Every step<br /><span class="blue">leaves a mark.</span></h1>
+          <p class="lede">
+            Input, output, duration, approval state, settlement hash. Generated by the same server loop that does the work.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Steps</label><b>1 tool</b></div>
+            <div class="fact"><label>Events</label><b>14</b></div>
+            <div class="fact"><label>Duration</label><b>6.74s</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="shot trace">
+            <img src="../../artifacts/demo/crypto/trace.png" alt="VANTA execution trace showing get_weather input, output, 6.74 seconds and a settled 0.01 USDC receipt" />
+            <span class="shot-tag">14 EVENTS</span>
+          </div>
+          <p class="caption">Observability is not a dashboard bolted on after.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>Input. Output. Duration. Receipt.</span>
+        <span>TRACE / 6.74S</span>
+      </footer>
+    </article>
+
+    <article class="post dark" id="p07">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" style="background: var(--orange); color: var(--ink)">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">07 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The limit</p>
+          <h1>Testnet only.<br /><span class="orange">On purpose.</span></h1>
+          <p class="lede">
+            The wallet holds test USDC and test ETH. No mainnet path exists in the code. The capability is real; the blast radius is contained.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Chain</label><b>Base Sepolia</b></div>
+            <div class="fact"><label>Asset</label><b>Test USDC</b></div>
+            <div class="fact"><label>Mainnet</label><b>None</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="limit-card">
+            <div class="limit-head">
+              <span>CHAIN / 84532</span>
+              <span class="limit-stamp">TESTNET</span>
+            </div>
+            <div class="limit-body">
+              <div class="limit-big">No real<br />funds.</div>
+              <div class="limit-rule"></div>
+              <div class="limit-row"><span>Network</span><b>Base Sepolia</b></div>
+              <div class="limit-row"><span>Wallet</span><b>0xDa83…bAfe</b></div>
+              <div class="limit-row"><span>Mainnet path</span><b>None</b></div>
+              <div class="limit-row"><span>Approval</span><b>Required</b></div>
+            </div>
+          </div>
+          <p class="limit-foot">Ship the boundary before the balance.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>No mainnet path. No real funds.</span>
+        <span>BASE SEPOLIA / 84532</span>
+      </footer>
+    </article>
+
+    <article class="post" id="p08">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">08 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The work</p>
+          <h1 class="small">13 free tools.<br /><span class="blue">Zero wallet.</span></h1>
+          <p class="lede">
+            Calculate, convert, format, summarize, plan, check a URL, search. They run without payment.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Free</label><b>13</b></div>
+            <div class="fact"><label>Paid</label><b>3</b></div>
+            <div class="fact"><label>Wallet</label><b>Not required</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="shot tools">
+            <img src="../../artifacts/demo/07-tools.png" alt="VANTA tools index showing free and paid tools with prices" />
+            <span class="shot-tag blue">FREE TIER</span>
+          </div>
+          <p class="caption">Paid tools are reserved for work that actually needs them.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>The price list is public.</span>
+        <span>16 TOOLS / 3 PAID</span>
+      </footer>
+    </article>
+
+    <article class="post dark" id="p09">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" style="background: var(--orange); color: var(--ink)">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">09 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The demo</p>
+          <h1 class="small">57.88 seconds<br /><span class="orange">of evidence.</span></h1>
+          <p class="lede">
+            Real capture. Real approval. Real settlement. The film is cut from the running app, not a mock.
+          </p>
+          <div class="facts">
+            <div class="fact"><label>Runtime</label><b>57.88s</b></div>
+            <div class="fact"><label>Format</label><b>1920×1080</b></div>
+            <div class="fact"><label>Voice</label><b>Local TTS</b></div>
+          </div>
+        </section>
+        <aside class="media">
+          <div class="shot">
+            <img src="../../artifacts/demo/crypto-poster.png" alt="VANTA crypto demo poster: one click, one receipt, with transaction 0x9b376282 and block 49,311,297" />
+            <span class="shot-tag">WATCH / DRIVE</span>
+          </div>
+          <p class="caption">Six scenes. One real settlement.</p>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>The demo is the evidence.</span>
+        <span>57.88S / 1080P</span>
+      </footer>
+    </article>
+
+    <article class="post cobalt" id="p10">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" style="background: var(--cream); color: var(--cobalt)">V</span>
+          <span>VANTA</span>
+          <span class="brand-rule"></span>
+          <span class="brand-sub">FIELD MANUAL<br />OBSERVABLE WORK AGENT</span>
+        </div>
+        <span class="series">WEEK 03 / X402</span>
+        <span class="number">10 / 10</span>
+      </header>
+      <div class="main">
+        <section class="copy">
+          <p class="kicker">The close</p>
+          <img class="close-mark" src="../../app/icon.svg" alt="VANTA mark" />
+          <h1 class="small">Give it a job.<br /><span class="orange">Keep the receipts.</span></h1>
+          <p class="lede">
+            VANTA is live on GitHub. The demo and the receipt are public.
+          </p>
+          <p class="close-note">WEEK 03 / BUILT FOR @RISEINWEB3</p>
+        </section>
+        <aside class="media">
+          <div class="limit-card close-links">
+            <div class="close-link">
+              <label>Repository</label>
+              <b>github.com/Boredooms/Agentmaxxing</b>
+              <em>Code · docs · capture record</em>
+            </div>
+            <div class="close-link">
+              <label>Demo</label>
+              <b>drive.google.com / 1Xj1Vv1m76S…</b>
+              <em>57.88s · real settlement</em>
+            </div>
+            <div class="close-link">
+              <label>X</label>
+              <b>@vantanss7</b>
+              <em>Follow the build</em>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <footer class="foot">
+        <strong>@vantanss7</strong>
+        <span>Testnet only. Human approval. Real receipts.</span>
+        <span>WEEK 03 / SHIP</span>
+      </footer>
+    </article>
+  </body>
+</html>

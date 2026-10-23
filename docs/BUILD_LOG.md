@@ -173,11 +173,18 @@ The on-chain testnet transactions above are real Base Sepolia transactions; no m
 | Crypto video | Remotion render + ffprobe | **57.877s**, H.264 1920×1080/30fps, AAC 48 kHz stereo |
 | Crypto receipt | Base Sepolia RPC | **status `0x1`**, block **49,311,297** |
 | Replay cleanup | reference scan + `npm ls` | **no analytics or session-replay code/dependency remains** |
+| X frames | `npm run social:assets` | **10 × 1600×900** PNGs; copy counts **161–226 / 280** weighted characters |
 
 ### Push status
 
-- **Pushed.** `daaec88` is on `origin/main`; the working tree is clean and `main` matches the remote.
+- **Pushed.** `main` matches `origin/main`; the working tree is clean.
 - The remote had gained `BUILD_PROMPT_VANTA.md` after this branch was cut, so the local commit was rebased onto `origin/main` before pushing.
-- GitHub render checked: the README title, banner image, 48 relative Markdown targets across the docs, `SUBMISSION.md`, the demo MP4 page and the 7,089,440-byte raw download all resolve.
+- GitHub render checked: the README title, banner image, relative Markdown targets across the docs, `SUBMISSION.md`, the demo MP4 page and the 7,089,440-byte raw download all resolve.
 - The existing Vercel deployment was **not redeployed**.
-- The Week 3 crypto MP4 is committed and downloadable from GitHub. It is not uploaded to a public video host; the Google Drive link is still the Week 1 explainer, not the crypto cut.
+- The Week 3 crypto MP4 is committed, downloadable from GitHub and hosted on [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view). The hosted file is 7,089,440 bytes; its SHA-256 matches the committed master.
+
+### Submission links
+
+- Active X account: <https://x.com/vantanss7>.
+- The 10-post X launch kit, 1600×900 frames and alt text live in `artifacts/social/`; see `X_CONTENT_PLAN.md`.
+- The Week 3 crypto demo now has a public watch link; the Vercel deployment is still the only outstanding submission item.

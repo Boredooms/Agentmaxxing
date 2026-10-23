@@ -2,7 +2,7 @@
 
 **Runtime:** 57.88 seconds · **Format:** 1920×1080, 30fps, H.264 + AAC stereo 48 kHz · **Size:** 7.1 MB  
 **Voice:** local Windows SAPI (`Microsoft Zira Desktop`) · **Music/SFX:** none  
-**Final artifact:** [`vanta-crypto-demo.mp4`](vanta-crypto-demo.mp4) · **Poster:** [`crypto-poster.png`](crypto-poster.png)
+**Final artifact:** [`vanta-crypto-demo.mp4`](vanta-crypto-demo.mp4) · **Watch:** [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view) · **Poster:** [`crypto-poster.png`](crypto-poster.png)
 
 This is the **settlement** cut, not the denial explainer. It follows one real paid mission from wallet to approval to an
 on-chain Base Sepolia transaction. No mainnet transaction was made.
@@ -114,5 +114,6 @@ Measured with the ffmpeg/ffprobe binaries bundled with Remotion:
 
 ## Submission note
 
-The hosted Google Drive link supplied for the original explainer is **not** this cut. Upload
-`artifacts/demo/vanta-crypto-demo.mp4` before submitting Week 3 so the demo link points at the settlement video.
+The Week 3 cut is hosted [on Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view).
+The hosted file is 7,089,440 bytes with SHA-256 `b46175c6b7295fb695750542e344c1e66da3684bf7f386c4f26152b3ddeaf917`,
+identical to `artifacts/demo/vanta-crypto-demo.mp4`. The separate Google Drive link for the Week 1 explainer is not this cut.

@@ -2,6 +2,8 @@
 
 **Give it a job. Keep the receipts.**
 
+**Active X account:** <https://x.com/vantanss7>
+
 VANTA is an observable autonomous work agent. The identity is an operator's field manual: bone paper, ink rules,
 cobalt authorization and safety-orange stamps. The receipt is the recurring object; there is no robot, no gradient
 mesh and no stock imagery.

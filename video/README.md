@@ -7,6 +7,7 @@ mainnet transaction.
 
 **57.88 s · 1920×1080 · 30fps · H.264 + AAC stereo 48 kHz · 7.1 MB**
 
+- **Watch online:** [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view)
 - **Final file:** [`../artifacts/demo/vanta-crypto-demo.mp4`](../artifacts/demo/vanta-crypto-demo.mp4)
 - **Poster:** [`../artifacts/demo/crypto-poster.png`](../artifacts/demo/crypto-poster.png)
 - **Capture record:** [`../artifacts/demo/crypto/run.json`](../artifacts/demo/crypto/run.json)

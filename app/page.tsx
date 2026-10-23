@@ -23,7 +23,7 @@ import { MotionProvider } from "@/components/motion-provider";
 import { StoryScroll } from "@/components/story-scroll";
 import { VoiceWalkthrough } from "@/components/voice-walkthrough";
 import { HeroPlayground } from "@/components/hero-playground";
-import { CRYPTO_DEMO_PATH, CRYPTO_TX_URL, LIVE_URL, REPO_URL, VIDEO_URL, X_URL } from "@/lib/nav";
+import { CRYPTO_DEMO_PATH, CRYPTO_TX_URL, CRYPTO_VIDEO_URL, LIVE_URL, REPO_URL, VIDEO_URL, X_URL } from "@/lib/nav";
 import { VantaMark } from "@/components/brand";
 
 export const metadata: Metadata = {
@@ -340,12 +340,12 @@ export default function Home() {
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <a
-                href={VIDEO_URL}
+                href={CRYPTO_VIDEO_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 bg-foreground px-4 py-3 font-mono text-[10px] tracking-[0.12em] text-background uppercase transition-colors hover:bg-primary"
               >
-                Watch the 64s film <ArrowUpRight className="size-3.5" />
+                Watch the 57s crypto demo <ArrowUpRight className="size-3.5" />
               </a>
               <Link
                 href="/brand"
@@ -389,11 +389,19 @@ export default function Home() {
 
                 <div className="mt-7 flex flex-wrap gap-3">
                   <a
-                    href={CRYPTO_DEMO_PATH}
-                    download
+                    href={CRYPTO_VIDEO_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     className="inline-flex items-center gap-2 bg-[#f7f3ea] px-4 py-3 font-mono text-[10px] font-semibold tracking-[0.12em] text-foreground uppercase transition-colors hover:bg-[#ff8a66] hover:text-[#14161a]"
                   >
-                    <Download className="size-3.5" /> Download crypto demo
+                    <ArrowUpRight className="size-3.5" /> Watch crypto demo
+                  </a>
+                  <a
+                    href={CRYPTO_DEMO_PATH}
+                    download
+                    className="inline-flex items-center gap-2 border border-background/45 px-4 py-3 font-mono text-[10px] tracking-[0.12em] text-background uppercase transition-colors hover:border-background"
+                  >
+                    <Download className="size-3.5" /> Download MP4
                   </a>
                   <a
                     href={CRYPTO_TX_URL}
@@ -747,10 +755,11 @@ export default function Home() {
               <p className="mono-label mb-3">Code</p>
               <ul className="flex flex-col gap-2 text-xs text-muted-foreground">
                 <li><a href={REPO_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a></li>
-                <li><a href={VIDEO_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">Watch the film</a></li>
+                <li><a href={VIDEO_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">Week 1 film</a></li>
+                <li><a href={CRYPTO_VIDEO_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">Crypto demo</a></li>
                 <li><Link href="/brand" className="hover:text-foreground">Brand assets</Link></li>
                 <li><a href={LIVE_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">Live deployment</a></li>
-                <li><a href={X_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">X / @nightproof67</a></li>
+                <li><a href={X_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">X / @vantanss7</a></li>
               </ul>
             </div>
             <div>

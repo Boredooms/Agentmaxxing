@@ -201,6 +201,8 @@ Update README.md so it no longer represents the product merely as a starter kit.
 9. Demo link using the verified live URL; don't point to a broken or unverified domain. Keep current Vercel URL as fallback until a new deployment is confirmed.
 10. Future scope for Week 2/3 (e.g. ZK spend attestations, safer spending policies, agent-to-agent x402 purchases, additional tool packs, persistent run history, model switching) clearly separated from implemented features.
 11. Social media: product X page currently https://x.com/nightproof67 is the supplied account. Don't rename/create X handles automatically or claim a new product page exists. Mention the intended product handle as pending until actually created; include @riseinweb3/tagging submission guidance.
+
+> **Status 2026-10-24:** the live VANTA account is now <https://x.com/vantanss7>. The line above is kept as the original build instruction.
 12. Local setup, environment-variable names (never values), scripts, Vercel deployment steps, limitations and security notes.
 13. Clearly mark live vs demo-only capabilities, and include screenshots from actual app if feasible.
 14. Preserve relevant challenge acknowledgement/credits without letting it dominate the product story.
