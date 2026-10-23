@@ -187,4 +187,4 @@ The on-chain testnet transactions above are real Base Sepolia transactions; no m
 
 - Active X account: <https://x.com/vantanss7>.
 - The 10-post X launch kit, 1600×900 frames and alt text live in `artifacts/social/`; see `X_CONTENT_PLAN.md`.
-- The Week 3 crypto demo now has a public watch link; the Vercel deployment is still the only outstanding submission item.
+- The Week 3 crypto demo has a public watch link; public submission links are complete. The older Vercel deployment was not redeployed and is not claimed as this build.

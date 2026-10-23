@@ -7,7 +7,6 @@ export const NAV = [
 ] as const;
 
 export const REPO_URL = "https://github.com/Boredooms/Agentmaxxing";
-export const LIVE_URL = "https://agentmaxxing-boredooms-projects.vercel.app";
 export const X_URL = "https://x.com/vantanss7";
 
 export const VIDEO_URL = "https://drive.google.com/file/d/1WK4hn56ABNUuTaWi2XbBjuhAqFMdZNRw/view";

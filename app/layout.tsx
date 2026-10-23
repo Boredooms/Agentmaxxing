@@ -20,8 +20,21 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
 });
 
+// Canonical origin for Open Graph/Twitter images. Set NEXT_PUBLIC_SITE_URL
+// on any host that does not provide Vercel's deployment URL env vars.
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+const siteUrl = configuredSiteUrl
+  ? /^https?:\/\//.test(configuredSiteUrl)
+    ? configuredSiteUrl
+    : `https://${configuredSiteUrl}`
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://agentmaxxing-boredooms-projects.vercel.app"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "VANTA — Give it a job. Keep the receipts.",
     template: "%s · VANTA",

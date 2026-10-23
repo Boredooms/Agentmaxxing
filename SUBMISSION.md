@@ -43,7 +43,7 @@ The Week 3 Google Drive file is the crypto cut and is byte-identical to the comm
 - [x] Repository docs — README, build log, crypto shot list and raw capture record
 - [x] Public crypto video URL — [Google Drive](https://drive.google.com/file/d/1Xj1Vv1m76SJ_vCIX6gYc28-eO_zWdl0_/view)
 - [x] X account and launch kit — <https://x.com/vantanss7> · [`artifacts/social/X_CONTENT_PLAN.md`](artifacts/social/X_CONTENT_PLAN.md)
-- [ ] Public live deployment — existing Vercel deployment has not been re-verified or redeployed
+- [x] Public links — GitHub, Google Drive demo, X and brand kit. No live Vercel URL is claimed; the older deployment predates this build.
 
 ## Run locally
 

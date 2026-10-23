@@ -106,6 +106,7 @@ Measured with the ffmpeg/ffprobe binaries bundled with Remotion:
 | `crypto/approval.png` | Real paid-call approval card |
 | `crypto/wallet-before.png` | Wallet before the run (18.87 USDC) |
 | `crypto/wallet-after.png` | Wallet after the run (18.86 USDC) |
+| `crypto/wallet-before-top.png` / `wallet-after-top.png` | Clean balance crops used in the README and X frames |
 | `crypto/receipt.png` | Expanded paid step with `SETTLED 0.01 USDC` |
 | `crypto/receipt-settled.png` | Receipt strip used in the film |
 | `crypto/trace.png` | Execution trace with the paid step |

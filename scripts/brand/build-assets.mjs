@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { copyFile, mkdir, rm } from "node:fs/promises";
+import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -16,7 +16,6 @@ const artboards = [
 
 await mkdir(brandDir, { recursive: true });
 await mkdir(demoDir, { recursive: true });
-await rm(path.join(brandDir, "vanta-brand-kit.zip"), { force: true });
 
 const browser = await chromium.launch();
 
