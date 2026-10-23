@@ -12,6 +12,15 @@ import { randomInt } from "crypto";
 import { getWalletAddress, getWalletBalances, payAndFetch } from "./wallet";
 import { searchSources } from "../lib/web";
 import { safeFetchJson } from "../lib/x402";
+import {
+  calculateExpression,
+  checkUrlSafety,
+  compareSources,
+  convertUnits,
+  createActionPlan,
+  formatJson,
+  summarizeText,
+} from "../lib/toolkit";
 
 export type Tool = {
   name: string;
@@ -20,6 +29,10 @@ export type Tool = {
   parameters: object;
   /** Set for tools that cost money — their calls pause for user approval. */
   cost?: string;
+  /** How the tool does its work — shown in the catalog. */
+  kind: "deterministic" | "network" | "wallet" | "paid-api";
+  /** A truthful example invocation for the catalog UI. */
+  example?: string;
   /** The code that runs when the agent calls this tool. */
   run: (args: any, ctx: { baseUrl: string }) => Promise<unknown>;
 };
@@ -75,8 +88,10 @@ export const tools: Tool[] = [
   // ─── 1. A paid API: the agent's wallet signs a payment to unlock it ───
   {
     name: "get_weather",
-    description: "Get the current weather for a city. Costs 0.01 USDC, paid automatically from the agent's wallet.",
+    description: "Get the current weather for a city. Costs 0.01 USDC, paid from the agent's testnet wallet after your approval.",
     cost: "0.01 USDC",
+    kind: "paid-api",
+    example: '"weather in Mumbai"',
     parameters: {
       type: "object",
       properties: {
@@ -92,8 +107,9 @@ export const tools: Tool[] = [
   // ─── 2. A second paid API I built, same x402 pattern, higher stakes ───
   {
     name: "get_fortune",
-    description: "Get the agent's secret degen fortune (a crypto fortune-cookie reading). Costs 0.05 USDC, paid automatically.",
+    description: "Get the agent's secret degen fortune (a crypto fortune-cookie reading). Costs 0.05 USDC, paid after your approval.",
     cost: "0.05 USDC",
+    kind: "paid-api",
     parameters: { type: "object", properties: {} },
     run: async (_args, { baseUrl }) => payAndFetch(`${baseUrl}/api/fortune`),
   },
@@ -101,6 +117,7 @@ export const tools: Tool[] = [
   // ─── 3. Wallet tool: read the agent's own wallet ───
   {
     name: "get_my_wallet",
+    kind: "wallet",
     description:
       "Get the agent's own wallet address and its balances: native ETH and USDC on Base Sepolia (its home testnet), plus any USDC that a faucet sent to Ethereum Sepolia instead.",
     parameters: { type: "object", properties: {} },
@@ -121,6 +138,7 @@ export const tools: Tool[] = [
   // ─── 4. Live crypto prices from a real free API ───
   {
     name: "get_crypto_price",
+    kind: "network",
     description: "Get the current price of a cryptocurrency in USD or another fiat currency, using the free CoinGecko API.",
     parameters: {
       type: "object",
@@ -145,6 +163,7 @@ export const tools: Tool[] = [
   // ─── 5. Country facts, straight from the builder guide ───
   {
     name: "get_country_info",
+    kind: "network",
     description: "Get facts about a country, including its capital and population.",
     parameters: {
       type: "object",
@@ -183,6 +202,7 @@ export const tools: Tool[] = [
   // ─── 6. A plain tool: no wallet, no API ───
   {
     name: "get_joke",
+    kind: "network",
     description: "Get a random programming-friendly joke. Use when the user wants a joke.",
     parameters: { type: "object", properties: {} },
     run: async () => {
@@ -195,6 +215,7 @@ export const tools: Tool[] = [
   // ─── 8. Free quick search: Wikipedia + Hacker News ───
   {
     name: "web_search",
+    kind: "network",
     description: "Search the web for quick hits: Wikipedia articles and Hacker News stories. Returns titles, links and sources. Free.",
     parameters: {
       type: "object",
@@ -213,6 +234,7 @@ export const tools: Tool[] = [
   // ─── 9. PAID deep research: the agent's browser ───
   {
     name: "research_web",
+    kind: "paid-api",
     description:
       "Deep web research: searches multiple sources, crawls the top pages, extracts their text and returns structured findings with sources. Use for questions that need real reading, not just quick hits. Costs 0.1 USDC, charged after the user approves.",
     cost: "0.1 USDC",
@@ -230,6 +252,7 @@ export const tools: Tool[] = [
   // ─── 10. Another plain tool: pure code, no network at all ───
   {
     name: "roll_dice",
+    kind: "deterministic",
     description: "Roll a dice with the given number of sides.",
     parameters: {
       type: "object",
@@ -238,5 +261,142 @@ export const tools: Tool[] = [
       },
     },
     run: async ({ sides = 6 }) => ({ rolled: randomInt(1, sides + 1), sides }),
+  },
+
+  // ─── 11. Deterministic math: a real parser, never eval ───
+  {
+    name: "calculate_expression",
+    description:
+      "Evaluate a numeric arithmetic expression safely (numbers, parentheses, + - * / % ^ only). Use for any calculation instead of guessing. Never executes code.",
+    kind: "deterministic",
+    example: '"calculate_expression": { "expression": "(18 * 4) / 3" }',
+    parameters: {
+      type: "object",
+      properties: {
+        expression: { type: "string", description: "Arithmetic expression, e.g. (18 * 4) / 3 or 2^10" },
+      },
+      required: ["expression"],
+    },
+    run: async ({ expression }) => calculateExpression(String(expression ?? "")),
+  },
+
+  // ─── 12. Deterministic unit conversion ───
+  {
+    name: "convert_units",
+    description:
+      "Convert a value between documented units of length, mass, volume, time, data size, speed, area or temperature. Rejects incompatible dimensions.",
+    kind: "deterministic",
+    example: '"convert_units": { "value": 12, "from": "km", "to": "mi" }',
+    parameters: {
+      type: "object",
+      properties: {
+        value: { type: "number", description: "Numeric value to convert" },
+        from: { type: "string", description: "Source unit, e.g. km, lb, c, GB" },
+        to: { type: "string", description: "Target unit, e.g. mi, kg, f, MB" },
+      },
+      required: ["value", "from", "to"],
+    },
+    run: async ({ value, from, to }) => convertUnits(Number(value), String(from ?? ""), String(to ?? "")),
+  },
+
+  // ─── 13. Deterministic JSON validation/formatting ───
+  {
+    name: "format_json",
+    description:
+      "Validate and pretty-print a JSON string. Reports syntax errors without echoing the input. Use when the user pastes JSON or asks to check/format it.",
+    kind: "deterministic",
+    example: '"format_json": { "json": "{\\"a\\":1}" }',
+    parameters: {
+      type: "object",
+      properties: {
+        json: { type: "string", description: "JSON text to parse and format" },
+        indent: { type: "number", description: "Indent width: 2 (default) or 4" },
+      },
+      required: ["json"],
+    },
+    run: async ({ json, indent }) =>
+      formatJson(String(json ?? ""), Number(indent) === 4 ? 4 : 2),
+  },
+
+  // ─── 14. Deterministic extractive summary (no LLM call) ───
+  {
+    name: "summarize_text",
+    description:
+      "Produce a transparent extractive summary of supplied text (deterministic sentence scoring, not generative). Returns the sentences it selected and the compression ratio.",
+    kind: "deterministic",
+    example: '"summarize_text": { "text": "<article>", "max_sentences": 3 }',
+    parameters: {
+      type: "object",
+      properties: {
+        text: { type: "string", description: "Text to summarize" },
+        max_sentences: { type: "number", description: "1-8 sentences, default 4" },
+      },
+      required: ["text"],
+    },
+    run: async ({ text, max_sentences }) => summarizeText(String(text ?? ""), Number(max_sentences) || 4),
+  },
+
+  // ─── 15. Structured checklist generation (never auto-runs) ───
+  {
+    name: "create_action_plan",
+    description:
+      "Turn a goal plus explicit steps into a validated, ordered checklist with pending states. It only creates the plan — it never executes the steps.",
+    kind: "deterministic",
+    example: '"create_action_plan": { "goal": "Ship briefing", "steps": ["Collect sources", "Draft"] }',
+    parameters: {
+      type: "object",
+      properties: {
+        goal: { type: "string", description: "The outcome the plan is for" },
+        steps: { type: "array", items: { type: "string" }, description: "1-12 concrete steps, in order" },
+      },
+      required: ["goal", "steps"],
+    },
+    run: async ({ goal, steps }) => createActionPlan(String(goal ?? ""), Array.isArray(steps) ? steps.map(String) : []),
+  },
+
+  // ─── 16. URL syntax safety (never fetches) ───
+  {
+    name: "check_url_safety",
+    description:
+      "Check a URL's syntax, scheme and hostname for obvious risk (private hosts, credentials, unsupported schemes). It does not fetch the URL and is not a malware scanner.",
+    kind: "deterministic",
+    example: '"check_url_safety": { "url": "https://example.com" }',
+    parameters: {
+      type: "object",
+      properties: { url: { type: "string", description: "Absolute URL to inspect" } },
+      required: ["url"],
+    },
+    run: async ({ url }) => checkUrlSafety(String(url ?? "")),
+  },
+
+  // ─── 17. Compare only the sources that were actually supplied ───
+  {
+    name: "compare_sources",
+    description:
+      "Compare 2-6 already-fetched sources by keyword overlap: shared terms, distinctive terms and question terms missing from every source. Never invents citations.",
+    kind: "deterministic",
+    example:
+      '"compare_sources": { "question": "agent payments", "sources": [{ "title": "A", "url": "https://…", "excerpt": "…" }] }',
+    parameters: {
+      type: "object",
+      properties: {
+        question: { type: "string", description: "The question being researched" },
+        sources: {
+          type: "array",
+          description: "Sources already returned by search/research",
+          items: {
+            type: "object",
+            properties: {
+              title: { type: "string" },
+              url: { type: "string" },
+              excerpt: { type: "string" },
+            },
+            required: ["title", "excerpt"],
+          },
+        },
+      },
+      required: ["question", "sources"],
+    },
+    run: async ({ question, sources }) => compareSources(String(question ?? ""), Array.isArray(sources) ? sources : []),
   },
 ];

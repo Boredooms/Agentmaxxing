@@ -23,9 +23,18 @@ export const GET = paidApi({
     const hits: SearchHit[] = await searchSources(safeFetchJson, q);
     if (hits.length === 0) throw new Error(`No search results for "${q}".`);
 
-    // 2. crawl the top pages in parallel (every fetch SSRF-guarded + capped)
+    // 2. Rank candidates by title relevance before crawling. The search layer
+    // returns Wikipedia hits first, but for niche technical terms the Hacker
+    // News stories are far more relevant. Ranking only reorders real hits — it
+    // never fabricates or rewrites sources.
+    const terms = (q.toLowerCase().match(/[a-z0-9-]{3,}/g) ?? []).filter(Boolean);
+    const score = (hit: SearchHit) =>
+      terms.reduce((sum, term) => sum + (hit.title.toLowerCase().includes(term) ? 1 : 0), 0);
+    const ranked = [...hits].sort((a, b) => score(b) - score(a));
+
+    // 3. crawl the most relevant pages in parallel (each fetch SSRF-guarded + capped)
     const crawled = await Promise.allSettled(
-      hits.slice(0, 3).map(async (hit) => ({ hit, page: await crawlText(hit.url, { timeoutMs: 8000, maxChars: 2600 }) }))
+      ranked.slice(0, 4).map(async (hit) => ({ hit, page: await crawlText(hit.url, { timeoutMs: 8000, maxChars: 2600 }) }))
     );
     const findings = crawled
       .filter((r): r is PromiseFulfilledResult<{ hit: SearchHit; page: { url: string; title: string; text: string } }> => r.status === "fulfilled")

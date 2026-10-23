@@ -1,0 +1,17 @@
+VANTA — Week 3 crypto demo narration (57.88 seconds)
+
+[0:00] VANTA has a wallet. Testnet USDC on Base Sepolia, and a human approval before every paid call.
+
+[0:07] The wallet is real. An address on Base Sepolia, testnet ETH for gas, and eighteen point eight seven USDC for work. No mainnet path.
+
+[0:18] Ask for the weather in Mumbai. VANTA selects get weather, and stops. The approval names the exact call, the price, and the network. Nothing runs until you decide.
+
+[0:29] You approve. The server consumes a single-use approval, verifies the x402 payment, and settles on chain. The trace records the transaction.
+
+[0:39] The wallet moves from eighteen point eight seven to eighteen point eight six USDC. A real Base Sepolia transaction, with a receipt you can open.
+
+[0:48] VANTA. Give it a job. Keep the receipts. Testnet only. Human approval. Real receipts.
+
+Settlement: 0.01 USDC on Base Sepolia, tx 0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9, block 49,311,297, status 0x1.
+Wallet: 0xDa833385f8fc281E4117422CaEC6FCfbB1a2bAfe, 18.87 → 18.86 USDC.
+Voice: local Windows SAPI (Microsoft Zira Desktop), generated 2026-10-24.

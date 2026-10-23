@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VANTA brand artboards</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap");
+
+      :root {
+        --paper: #ede7db;
+        --cream: #f7f3ea;
+        --ink: #14161a;
+        --muted: #6a6459;
+        --cobalt: #1b2be0;
+        --orange: #ff4d12;
+        --bricolage: "Bricolage Grotesque", "Arial Black", Arial, sans-serif;
+        --public: "Public Sans", "Segoe UI", Arial, sans-serif;
+        --mono: "IBM Plex Mono", "Courier New", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #8d8578;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 48px;
+        padding: 48px;
+      }
+
+      .art {
+        position: relative;
+        flex: none;
+        overflow: hidden;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--public);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(to right, rgba(27, 43, 224, 0.075) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(27, 43, 224, 0.075) 1px, transparent 1px);
+        background-size: 48px 48px;
+      }
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.35;
+        background-image: radial-gradient(rgba(20, 22, 26, 0.28) 0.55px, transparent 0.55px);
+        background-size: 5px 5px;
+      }
+
+      .mark {
+        display: block;
+        flex: none;
+      }
+
+      .mono {
+        font-family: var(--mono);
+        text-transform: uppercase;
+      }
+
+      /* ---------------------------------------------------------------- PFP */
+
+      .pfp {
+        width: 400px;
+        height: 400px;
+        background: var(--cobalt);
+        color: var(--cream);
+      }
+
+      .pfp .pfp-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(to right, rgba(247, 243, 234, 0.09) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(247, 243, 234, 0.09) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+
+      .pfp .pfp-mark {
+        position: absolute;
+        left: 50%;
+        top: 46%;
+        width: 252px;
+        height: 252px;
+        transform: translate(-50%, -50%);
+      }
+
+      .pfp .pfp-foot {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 19px;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: rgba(247, 243, 234, 0.6);
+      }
+
+      .pfp .pfp-notch {
+        position: absolute;
+        left: 24px;
+        bottom: 24px;
+        width: 34px;
+        height: 4px;
+        background: var(--orange);
+      }
+
+      .pfp.apple {
+        width: 180px;
+        height: 180px;
+      }
+
+      .pfp.apple .pfp-mark {
+        width: 118px;
+        height: 118px;
+        top: 48%;
+      }
+
+      .pfp.apple .pfp-grid {
+        background-size: 18px 18px;
+      }
+
+      .pfp.apple .pfp-notch {
+        left: 12px;
+        bottom: 12px;
+        width: 18px;
+        height: 3px;
+      }
+
+      /* ------------------------------------------------------------- BANNER */
+
+      .banner {
+        width: 1500px;
+        height: 500px;
+      }
+
+      .banner .inner {
+        position: absolute;
+        inset: 0;
+        padding: 46px 62px;
+      }
+
+      .banner .top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .banner .top .mark {
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(20, 22, 26, 0.4);
+      }
+
+      .banner .word {
+        font-family: var(--bricolage);
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 0.19em;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .banner .sep {
+        width: 1px;
+        height: 22px;
+        background: rgba(20, 22, 26, 0.35);
+        margin: 0 5px;
+      }
+
+      .banner .top-meta {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.19em;
+        line-height: 1.5;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .banner .top-meta b {
+        display: block;
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .banner .top-right {
+        margin-left: auto;
+        border: 1px solid rgba(20, 22, 26, 0.4);
+        padding: 7px 11px;
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .banner h1 {
+        margin: 39px 0 0;
+        font-family: var(--bricolage);
+        font-size: 86px;
+        font-weight: 800;
+        line-height: 0.84;
+        letter-spacing: -0.055em;
+      }
+
+      .banner h1 .cobalt {
+        color: var(--cobalt);
+      }
+
+      .banner h1 .marked {
+        background: linear-gradient(transparent 69%, rgba(255, 77, 18, 0.34) 69%);
+      }
+
+      .banner .sub {
+        max-width: 640px;
+        margin: 23px 0 0;
+        font-size: 17px;
+        line-height: 1.45;
+        color: rgba(20, 22, 26, 0.72);
+      }
+
+      .banner .sub b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .banner .bottom {
+        position: absolute;
+        left: 250px;
+        bottom: 26px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .banner .bottom .rule {
+        width: 52px;
+        height: 4px;
+        background: var(--orange);
+      }
+
+      .receipt {
+        position: absolute;
+        background: var(--cream);
+        border: 2px solid var(--ink);
+        box-shadow: 12px 12px 0 rgba(20, 22, 26, 0.14);
+      }
+
+      .banner .receipt {
+        right: 54px;
+        top: 104px;
+        width: 430px;
+        height: 344px;
+        transform: rotate(-2.2deg);
+      }
+
+      .receipt .stub {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 15px;
+        background: var(--cobalt);
+        border-right: 2px solid var(--ink);
+      }
+
+      .receipt .body {
+        position: absolute;
+        left: 15px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        padding: 19px 22px 16px 20px;
+      }
+
+      .receipt .head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 11px;
+        border-bottom: 2px solid var(--ink);
+      }
+
+      .receipt .head .label {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .receipt .head .label span {
+        display: block;
+        margin-top: 2px;
+        font-size: 7px;
+        font-weight: 400;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+      }
+
+      .receipt .head .no {
+        font-family: var(--mono);
+        font-size: 8px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: right;
+      }
+
+      .receipt .tool {
+        margin-top: 13px;
+        font-family: var(--mono);
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .receipt .mission {
+        margin-top: 3px;
+        font-size: 10px;
+        line-height: 1.35;
+        color: var(--muted);
+      }
+
+      .receipt .rows {
+        margin-top: 12px;
+        border-top: 1px solid rgba(20, 22, 26, 0.25);
+      }
+
+      .receipt .row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 0;
+        border-bottom: 1px dotted rgba(20, 22, 26, 0.3);
+        font-family: var(--mono);
+        font-size: 8px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .receipt .row span {
+        color: var(--muted);
+      }
+
+      .receipt .row b {
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .receipt .row b.orange {
+        color: var(--orange);
+      }
+
+      .receipt .stamp {
+        position: absolute;
+        right: 16px;
+        bottom: 55px;
+        transform: rotate(-7deg);
+        border: 2px solid var(--orange);
+        padding: 6px 9px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 8px;
+        font-weight: 600;
+        line-height: 1.35;
+        letter-spacing: 0.14em;
+        text-align: center;
+        text-transform: uppercase;
+        background: rgba(247, 243, 234, 0.65);
+      }
+
+      .receipt .barcode {
+        position: absolute;
+        left: 35px;
+        bottom: 46px;
+        width: 142px;
+        height: 24px;
+        color: var(--ink);
+        background-image: repeating-linear-gradient(
+          to right,
+          currentColor 0,
+          currentColor 1px,
+          transparent 1px,
+          transparent 3px,
+          currentColor 3px,
+          currentColor 5px,
+          transparent 5px,
+          transparent 8px
+        );
+      }
+
+      .receipt .note {
+        position: absolute;
+        left: 35px;
+        right: 20px;
+        bottom: 17px;
+        font-family: var(--mono);
+        font-size: 7px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* ----------------------------------------------------------------- OG */
+
+      .og {
+        width: 1200px;
+        height: 630px;
+        display: grid;
+        grid-template-columns: 748px 452px;
+      }
+
+      .og-left {
+        position: relative;
+        padding: 48px 52px;
+      }
+
+      .og-brand {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+      }
+
+      .og-brand .mark {
+        width: 46px;
+        height: 46px;
+      }
+
+      .og-brand .word {
+        font-family: var(--bricolage);
+        font-size: 23px;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .og-brand .kicker {
+        margin-left: 12px;
+        padding-left: 15px;
+        border-left: 1px solid rgba(20, 22, 26, 0.35);
+        font-family: var(--mono);
+        font-size: 8px;
+        font-weight: 500;
+        letter-spacing: 0.17em;
+        line-height: 1.5;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .og h1 {
+        margin: 62px 0 0;
+        font-family: var(--bricolage);
+        font-size: 74px;
+        font-weight: 800;
+        line-height: 0.86;
+        letter-spacing: -0.055em;
+      }
+
+      .og h1 .cobalt {
+        color: var(--cobalt);
+      }
+
+      .og h1 .marked {
+        background: linear-gradient(transparent 69%, rgba(255, 77, 18, 0.34) 69%);
+      }
+
+      .og .sub {
+        max-width: 555px;
+        margin: 27px 0 0;
+        font-size: 18px;
+        line-height: 1.5;
+        color: rgba(20, 22, 26, 0.74);
+      }
+
+      .og .foot {
+        position: absolute;
+        left: 52px;
+        right: 52px;
+        bottom: 34px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        font-family: var(--mono);
+        font-size: 8px;
+        font-weight: 500;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .og .foot .rule {
+        width: 46px;
+        height: 4px;
+        background: var(--orange);
+      }
+
+      .og .foot .bar {
+        margin-left: auto;
+        width: 92px;
+        height: 18px;
+        background-image: repeating-linear-gradient(
+          to right,
+          currentColor 0,
+          currentColor 1px,
+          transparent 1px,
+          transparent 3px,
+          currentColor 3px,
+          currentColor 5px,
+          transparent 5px,
+          transparent 8px
+        );
+        color: rgba(20, 22, 26, 0.55);
+      }
+
+      .og-right {
+        position: relative;
+        overflow: hidden;
+        background: var(--cobalt);
+      }
+
+      .og-right .panel-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(to right, rgba(247, 243, 234, 0.09) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(247, 243, 234, 0.09) 1px, transparent 1px);
+        background-size: 38px 38px;
+      }
+
+      .og-right .receipt {
+        left: 54px;
+        top: 108px;
+        width: 344px;
+        height: 428px;
+        transform: rotate(-3.4deg);
+        box-shadow: 14px 14px 0 rgba(9, 14, 80, 0.32);
+      }
+
+      .og-right .receipt .body {
+        padding: 18px 18px 16px 18px;
+      }
+
+      .og-right .receipt .tool {
+        font-size: 15px;
+      }
+
+      .og-right .receipt .row {
+        padding: 8px 0;
+        font-size: 8px;
+      }
+
+      .og-right .receipt .stamp {
+        bottom: 80px;
+        right: 18px;
+      }
+
+      .og-right .receipt .barcode {
+        bottom: 50px;
+      }
+
+      .og-right .receipt .note {
+        bottom: 20px;
+      }
+
+      .og-right .corner {
+        position: absolute;
+        right: 18px;
+        top: 18px;
+        width: 48px;
+        height: 48px;
+        background: var(--orange);
+      }
+
+      .og-right .vertical {
+        position: absolute;
+        right: 21px;
+        bottom: 22px;
+        writing-mode: vertical-rl;
+        font-family: var(--mono);
+        font-size: 8px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(247, 243, 234, 0.65);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- X profile picture: 400 x 400 -->
+    <div class="art pfp" id="pfp">
+      <div class="pfp-grid"></div>
+      <div class="grain"></div>
+      <svg class="pfp-mark" viewBox="0 0 64 64" role="img" aria-label="VANTA mark">
+        <path d="M9 12h12.5l10.5 32 10.5-32H55L38.5 54h-13L9 12Z" fill="#F7F3EA" />
+        <rect x="46" y="6" width="12" height="12" fill="#FF4D12" />
+        <path d="M9 58h12" stroke="#F7F3EA" stroke-width="2" />
+      </svg>
+      <div class="pfp-notch"></div>
+      <div class="pfp-foot">Field manual / 001</div>
+    </div>
+
+    <!-- Apple touch icon: 180 x 180 -->
+    <div class="art pfp apple" id="apple">
+      <div class="pfp-grid"></div>
+      <div class="grain"></div>
+      <svg class="pfp-mark" viewBox="0 0 64 64" role="img" aria-label="VANTA mark">
+        <path d="M9 12h12.5l10.5 32 10.5-32H55L38.5 54h-13L9 12Z" fill="#F7F3EA" />
+        <rect x="46" y="6" width="12" height="12" fill="#FF4D12" />
+        <path d="M9 58h12" stroke="#F7F3EA" stroke-width="2" />
+      </svg>
+      <div class="pfp-notch"></div>
+    </div>
+
+    <!-- X header: 1500 x 500 -->
+    <div class="art banner" id="banner">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <div class="inner">
+        <div class="top">
+          <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="VANTA mark">
+            <rect width="64" height="64" fill="#1B2BE0" />
+            <path d="M9 12h12.5l10.5 32 10.5-32H55L38.5 54h-13L9 12Z" fill="#F7F3EA" />
+            <rect x="46" y="6" width="12" height="12" fill="#FF4D12" />
+            <path d="M9 58h12" stroke="#F7F3EA" stroke-width="2" />
+          </svg>
+          <div class="word">Vanta</div>
+          <div class="sep"></div>
+          <div class="top-meta">
+            <b>Field manual / 001</b>
+            Observable work agent
+          </div>
+          <div class="top-right">Base Sepolia · testnet</div>
+        </div>
+
+        <h1>
+          Give it a job.<br />
+          <span class="cobalt">Keep the <span class="marked">receipts.</span></span>
+        </h1>
+
+        <p class="sub">
+          Plans. Uses <b>real tools</b>. Shows every step. Cites what it read — and stops for your
+          approval before spending a single testnet dollar.
+        </p>
+      </div>
+
+      <div class="bottom">
+        <span class="rule"></span>
+        <span>Plan → call → measure → show → ask</span>
+      </div>
+
+      <div class="receipt">
+        <div class="stub"></div>
+        <div class="body">
+          <div class="head">
+            <div class="label">Work order<span>Nothing runs until you say so</span></div>
+            <div class="no">No. 0001<br />Live</div>
+          </div>
+          <div class="tool">research_web</div>
+          <div class="mission">Agentic payments briefing · cite every source</div>
+          <div class="rows">
+            <div class="row"><span>Intent</span><b>Paid research</b></div>
+            <div class="row"><span>Price</span><b>0.10 USDC</b></div>
+            <div class="row"><span>Network</span><b>Base Sepolia</b></div>
+            <div class="row"><span>Approval</span><b class="orange">Required</b></div>
+          </div>
+          <div class="stamp">Authorization<br />required</div>
+          <div class="barcode"></div>
+          <div class="note">Single-use id · 5 minute expiry</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social card: 1200 x 630 -->
+    <div class="art og" id="og">
+      <div class="grid"></div>
+      <div class="grain"></div>
+      <div class="og-left">
+        <div class="og-brand">
+          <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="VANTA mark">
+            <rect width="64" height="64" fill="#1B2BE0" />
+            <path d="M9 12h12.5l10.5 32 10.5-32H55L38.5 54h-13L9 12Z" fill="#F7F3EA" />
+            <rect x="46" y="6" width="12" height="12" fill="#FF4D12" />
+            <path d="M9 58h12" stroke="#F7F3EA" stroke-width="2" />
+          </svg>
+          <div class="word">Vanta</div>
+          <div class="kicker">Observable<br />autonomous work agent</div>
+        </div>
+
+        <h1>
+          Give it a job.<br />
+          <span class="cobalt">Keep the <span class="marked">receipts.</span></span>
+        </h1>
+
+        <p class="sub">
+          It plans. It calls real tools. It shows every input, every output and every source — then asks
+          before spending testnet USDC.
+        </p>
+
+        <div class="foot">
+          <span class="rule"></span>
+          <span>16 tools · human approval · testnet only</span>
+          <span class="bar"></span>
+        </div>
+      </div>
+
+      <div class="og-right">
+        <div class="panel-grid"></div>
+        <div class="corner"></div>
+        <div class="receipt">
+          <div class="stub"></div>
+          <div class="body">
+            <div class="head">
+              <div class="label">Work order<span>Nothing runs until you say so</span></div>
+              <div class="no">No. 0001<br />Live</div>
+            </div>
+            <div class="tool">research_web</div>
+            <div class="mission">Agentic payments briefing · cite every source</div>
+            <div class="rows">
+              <div class="row"><span>Intent</span><b>Paid research</b></div>
+              <div class="row"><span>Price</span><b>0.10 USDC</b></div>
+              <div class="row"><span>Network</span><b>Base Sepolia</b></div>
+              <div class="row"><span>Approval</span><b class="orange">Required</b></div>
+            </div>
+            <div class="stamp">Authorization<br />required</div>
+            <div class="barcode"></div>
+            <div class="note">Single-use id · 5 minute expiry</div>
+          </div>
+        </div>
+        <div class="vertical">VANTA / Field manual 001</div>
+      </div>
+    </div>
+  </body>
+</html>

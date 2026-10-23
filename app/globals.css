@@ -5,78 +5,325 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-space-grotesk);
-    --font-sans: var(--font-space-grotesk);
-    --font-mono: var(--font-jetbrains-mono);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --color-blue: var(--blue);
-    --color-blue-soft: var(--blue-soft);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --font-heading: var(--font-bricolage);
+  --font-sans: var(--font-public-sans);
+  --font-mono: var(--font-plex-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-indigo: var(--indigo);
+  --color-cobalt: var(--cobalt);
+  --color-paper: var(--paper);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
 
 :root {
-    /* Agentmaxxing palette */
-    --background: #0A0A0A;
-    --foreground: #F2F1EC;
-    --card: #111110;
-    --card-foreground: #F2F1EC;
-    --popover: #111110;
-    --popover-foreground: #F2F1EC;
-    --primary: #C8E850;
-    --primary-foreground: #0A0A0A;
-    --secondary: #2A2A28;
-    --secondary-foreground: #F2F1EC;
-    --muted: #1A1A19;
-    --muted-foreground: #9A9A93;
-    --accent: #2A2A28;
-    --accent-foreground: #F2F1EC;
-    --destructive: #FF6B5A;
-    --border: rgba(242, 241, 236, 0.13);
-    --input: rgba(242, 241, 236, 0.24);
-    --ring: #C8E850;
-    --blue: #2030D8;
-    --blue-soft: #8C96FF;
-    --radius: 0rem;
+  /* VANTA field manual: bone paper, ink, cobalt authorization, safety orange. */
+  --background: #ede7db;
+  --foreground: #14161a;
+  --card: #f7f3ea;
+  --card-foreground: #14161a;
+  --popover: #f7f3ea;
+  --popover-foreground: #14161a;
+  --primary: #1b2be0;
+  --primary-foreground: #faf7ef;
+  --secondary: #ddd5c6;
+  --secondary-foreground: #14161a;
+  --muted: #e4ddcf;
+  --muted-foreground: #6a6459;
+  --accent: #dce1fa;
+  --accent-foreground: #14161a;
+  --destructive: #c92a1b;
+  --border: rgba(20, 22, 26, 0.26);
+  --input: rgba(20, 22, 26, 0.4);
+  --ring: #ff4d12;
+  --signal: #ff4d12;
+  --signal-soft: rgba(255, 77, 18, 0.1);
+  --indigo: #1b2be0;
+  --cobalt: #1b2be0;
+  --paper: #ede7db;
+  --radius: 0px;
 }
-
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
+  }
   html {
     @apply font-sans;
-    }
+    background: var(--background);
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01" 1, "cv01" 1;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--signal);
+    color: #fffaf2;
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
 }
-/* Faint 6 column grid behind the page, like agentmaxxin.xyz */
+
+/* A sheet of ruled technical paper, not a dark SaaS surface. */
 body {
-  background-image: linear-gradient(to right, rgba(242, 241, 236, 0.045) 1px, transparent 1px);
-  background-size: calc(100% / 6) 100%;
+  background-image:
+    linear-gradient(to bottom, rgba(20, 22, 26, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 14% -10%, rgba(27, 43, 224, 0.09), transparent 42%);
+  background-size: 100% 30px, 100% 100%;
+  background-attachment: fixed;
 }
-::selection { background: var(--primary); color: var(--primary-foreground); }
+
+.paper-grid {
+  background-image:
+    linear-gradient(to right, rgba(27, 43, 224, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(27, 43, 224, 0.09) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hero-sheet {
+  background:
+    radial-gradient(circle at 86% 8%, rgba(27, 43, 224, 0.12), transparent 34%),
+    linear-gradient(to bottom, rgba(255, 77, 18, 0.035), transparent 55%),
+    var(--paper);
+}
+
+.margin-rule {
+  box-shadow: inset 3px 0 0 var(--signal);
+}
+
+.dot-grid {
+  background-image: radial-gradient(rgba(20, 22, 26, 0.26) 0.7px, transparent 0.7px);
+  background-size: 18px 18px;
+}
+
+.mono-label {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.display {
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+}
+
+.display-tight {
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.display em {
+  font-style: normal;
+  color: var(--primary);
+}
+
+.hairline {
+  border-color: var(--border);
+}
+
+.surface {
+  background: var(--card);
+  border: 1px solid var(--foreground);
+  box-shadow: 4px 4px 0 rgba(20, 22, 26, 0.09);
+}
+
+.sheet {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+/* The signature: a printed work order / receipt strip. */
+.receipt {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--foreground);
+  box-shadow: 5px 5px 0 rgba(20, 22, 26, 0.11);
+}
+
+.receipt-edge {
+  height: 5px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--foreground) 0,
+    var(--foreground) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  opacity: 0.45;
+}
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 2px solid var(--signal);
+  box-shadow: inset 0 0 0 1px var(--signal);
+  color: var(--signal);
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  padding: 0.45rem 0.65rem;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
+.stamp-blue {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+  color: var(--primary);
+}
+
+.barcode {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0,
+    currentColor 2px,
+    transparent 2px,
+    transparent 5px,
+    currentColor 5px,
+    currentColor 6px,
+    transparent 6px,
+    transparent 11px,
+    currentColor 11px,
+    currentColor 14px,
+    transparent 14px,
+    transparent 17px
+  );
+}
+
+.marker {
+  background-image: linear-gradient(transparent 62%, rgba(255, 77, 18, 0.3) 62%);
+}
+
+.registration-mark {
+  position: relative;
+}
+.registration-mark::before,
+.registration-mark::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--signal);
+  border-style: solid;
+  pointer-events: none;
+}
+.registration-mark::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1.5px 0 0 1.5px;
+}
+.registration-mark::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+.hard-shadow {
+  box-shadow: 6px 6px 0 var(--foreground);
+}
+
+.hard-shadow-signal {
+  box-shadow: 6px 6px 0 var(--signal);
+}
+
+.answer-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+
+.answer-text strong {
+  color: var(--foreground);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(20, 22, 26, 0.28) transparent;
+}
+
+@keyframes vanta-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pulse-dot {
+  animation: vanta-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  animation: ticker 38s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ticker-track {
+    animation: none;
+  }
+}

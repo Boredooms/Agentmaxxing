@@ -1,0 +1,49 @@
+{
+  "capturedAt": "2026-10-23T19:35:33.835Z",
+  "mission": "What is the weather in Mumbai?",
+  "approval": {
+    "tool": "get_weather",
+    "args": { "city": "Mumbai" },
+    "total": "0.01 USDC",
+    "network": "Base Sepolia",
+    "runCap": "0.25 USDC",
+    "networkType": "TESTNET",
+    "expiry": "5 minutes",
+    "decision": "approved"
+  },
+  "runId": "c0762fef-9e30-4e97-8bab-31f4dc80b7d4",
+  "network": "Base Sepolia",
+  "tool": "get_weather",
+  "amountUsdc": "0.01 USDC",
+  "txHash": "0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9",
+  "explorer": "https://sepolia.basescan.org/tx/0x9b376282b627a2d8cadb0a05a770dbbedfa16dfe9b670a8c8802784c7a7352f9",
+  "chain": {
+    "status": "0x1",
+    "blockNumber": "0x2f06e41",
+    "from": "0xdd29c6254e4b73a0accbc78ff029dd51af436f7a",
+    "to": "0x036cbd53842c5426634e7929541ec2318f3dcf7e",
+    "gasUsed": "0x14f1c"
+  },
+  "wallet": {
+    "address": "0xDa833385f8fc281E4117422CaEC6FCfbB1a2bAfe",
+    "before": {
+      "eth": "0.005999867976327421",
+      "usdc": "18.87 USDC"
+    },
+    "after": {
+      "eth": "0.005999867976327421",
+      "usdc": "18.86 USDC"
+    }
+  },
+  "steps": [
+    {
+      "tool": "get_weather",
+      "paid": true,
+      "cost": "0.01 USDC",
+      "durationMs": 6740,
+      "denied": false,
+      "hasReceipt": true
+    }
+  ],
+  "consoleErrors": []
+}

@@ -187,7 +187,7 @@ export async function crawlText(
     const res = await fetch(url, {
       redirect: "manual",
       signal: AbortSignal.timeout(timeoutMs),
-      headers: { "user-agent": "Agentmaxxing-ResearchBot/1.0 (testnet demo; +https://github.com/Boredooms/Agentmaxxing)" },
+      headers: { "user-agent": "VANTA-ResearchBot/1.0 (testnet demo; +https://github.com/Boredooms/Agentmaxxing)" },
     });
 
     if ([301, 302, 303, 307, 308].includes(res.status)) {

@@ -1,0 +1,16 @@
+VANTA — explainer narration (63.55 seconds)
+
+[0:00] Most agents ask for your trust. VANTA shows you the work.
+
+[0:07] Give it a mission. Before the model sees a toolbox, VANTA classifies the request and writes a plan. Each step changes state only when it actually happens.
+
+[0:21] Real tools run. You see the arguments, the payload, and the measured duration. Thirteen free tools, no wallet required.
+
+[0:32] When a tool costs money, the loop stops. The exact call, price, and network. A single-use approval. Deny it, and the paid tool never runs.
+
+[0:47] The answer carries receipts. Real source URLs, and a testnet settlement when you approve.
+
+[0:56] VANTA. Give it a job. Keep the receipts.
+
+Voice: local Windows SAPI (Microsoft Zira Desktop), generated on 2026-10-24.
+The rendered video uses the exact narration above; the scene boundaries are timed to the generated WAV files.

@@ -8,6 +8,7 @@ next-env.d.ts
 .DS_Store
 
 # local tool caches, not part of the project
+.freebuff/
 .mimosa
 .kilocode
 .v2c
@@ -15,3 +16,16 @@ next-env.d.ts
 .zcodeignore
 tmpwebapp*.log
 .vercel
+
+# demo recordings are generated, not committed
+artifacts/demo/raw/
+artifacts/demo/*.webm
+artifacts/design/
+test-results/
+playwright-report/
+
+# explainer renders
+video/out/
+
+# explainer dependency lock is generated locally
+video/package-lock.json
